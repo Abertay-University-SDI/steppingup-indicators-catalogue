@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="robots" content="noindex, nofollow">
+		<meta name="robots" content="nosnippet">
+		<meta name="googlebot" content="nosnippet">
+		<meta property="og:title" content="">
+		<meta property="og:url" content="">
+		<meta property="og:type" content="website">
+		<meta property="og:description" content="">
+		<meta property="og:image" content="">
+		<title>STEPPING UP - SUSTAINABILITY INDICATORS</title>
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<link href="css/normalize.css" rel="stylesheet">
+		<link href="css/indicators.css" rel="stylesheet">
+	</head>
+	<body>
+		<header>
+			<a href="http://steppingupnexus.org.uk/" target="_blank"><img id="steppingupLogo" class="header-logo" src="img/SteppingUp_logo_rgb.png" alt="SteppingUp Logo"></a>
+			<a href="https://www.abertay.ac.uk/" target="_blank"><img id="abertayLogo" class="header-logo" src="img/abertay_logo_colour_transparent.png" alt="Abertay University Logo"></a>
+			<h1>Sustainability Indicators Catalogue</h1>
+		</header>
+		<main id="main">
+			<svg id="svgCanvas"></svg>
+			<section id="indicatorDetails" hidden>
+				<button id="backButton" onclick="goback()">x</button>
+				<h2 id="iTitle"></h2>
+				<p id="iDefinition">Consumed fuel from trucks.</p>
+				<p id="iProperties">
+					<span id="driverBarrier"></span>
+					<span id="upDown"></span>
+				</p>
+				<p id="scale"></p>
+				<p id="moreInformation"></p>
+				<section id="futureSection">
+					<h3>Future Scenarioes</h3>
+					<div id="futureScenarioButtonsDiv">
+						<button id="bns" class="futureScenarioButton">Big 'n' Smart</button><button id="cnc" class="futureScenarioButton">Create 'n' Cope</button><button id="snc" class="futureScenarioButton">Share 'n' Connect</button>
+					</div>
+					<div id="futureScenario">
+					</div>
+				</section>
+				<div id="sdgDiv">
+					<h3>Relation to UN Sustainable Development Goals</h3>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<a href="http://steppingupnexus.org.uk/" target="_blank"><img id="steppingupLogoSdg" src="img/SteppingUp_logo_rgb.png" alt="SteppingUp Logo"></a>
+								</td>
+								<td id="sdgIcons">
+									<a href="https://www.un.org/sustainabledevelopment/" target="_blank"><img id="sdgLogo" src="img/E_SDG_logo_No UN Emblem_square_rgb.png" alt="United Nations Sustainable Development Goals Logo"></a>
+									<span id="unsdg"></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</main>
+		<footer></footer>
+		<!-- Internet Explorer 'Promise' polyfill: https://github.com/taylorhakes/promise-polyfill -->
+		<script src="lib/promise-polyfill/polyfill.min.js"></script>
+		<!-- Internet Explorer 'fetch' polyfill: https://github.com/github/fetch -->
+		<script src="lib/fetch-3.0.0/fetch.umd.js"></script>
+		<!-- D3 Library: https://github.com/d3/d3/wiki -->
+		<script src="lib/d3/d3.min.js"></script>
+		<script src="js/indicators.js"></script>
+	</body>
+</html>
