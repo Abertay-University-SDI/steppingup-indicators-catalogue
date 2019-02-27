@@ -1,8 +1,8 @@
 @font-face {
-  font-family: 'Work Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../fnt/Work_Sans/WorkSans-Regular.ttf');
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: url('../fnt/Work_Sans/WorkSans-Regular.ttf');
 }
 
 /* must be defined here for Internet Explorer */
@@ -12,35 +12,48 @@ text, textPath {
 
 body {
 	font-family: 'Work Sans', sans-serif;
-}
-
-#svgCanvas {
-	width: 100%;
-	height: 700px;
-	margin: 0;
 	background-color: rgb(206, 235, 241);
 }
 
 header {
 	text-align: center;
+	background: none;
 }
 
 h1 {
-	display: inline-block;
-	margin: 0.1em;
-	text-align: left;
-	vertical-align: middle;
-}
-
-.header-logo {
-	height: 3em;
-	margin: 0.5em 2em;
-	vertical-align: middle;
-}
-
-main {
+	display: block;
+	margin: 0 auto;
 	text-align: center;
+	vertical-align: middle;
+	background: none;
 }
+
+#svgCanvas {
+	position: fixed;
+	margin: 0;
+	background-color: none;
+}
+
+footer {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+}
+
+.footer-logo {
+	height: 3em;
+	margin: 0.5em 1em;
+	vertical-align: middle;
+	opacity: 0.6;
+}
+
+.footer-logo:hover {
+	opacity: 1;
+}
+
+/**/
+/**/
+/**/
 
 #iProperties {
 	margin: 2.5em;
@@ -61,6 +74,7 @@ main {
 }
 
 #indicatorDetails {
+	text-align: center;
 	position: fixed;
 	top: 3em;
 	left: 15%;
@@ -224,59 +238,3 @@ main {
 #sdgIcons {
 	border-left: 2px solid black;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-#main-grid {
-	text-align: center;
-}
-
-div.grid-item {
-	display: inline-block;
-	width: 6em;
-	height: 4em;
-	margin: 1.0em;
-	padding: 1em;
-	vertical-align: middle;
-	text-align: center;
-	font-size: 1.5em;
-	background-color: lightgray;
-	transition: 200ms;
-	border-radius: 4.5em;
-	box-shadow: 0.0em 0.25em gray;
-}
-
-div.grid-item:hover {
-	width: 7.5em;
-	height: 5.5em;
-	margin: 0.25em;
-	transition: 200ms;
-	box-shadow: 0.0em 0.1em gray;
-}
-*/
-
