@@ -15,6 +15,10 @@ body {
 	background-color: rgb(206, 235, 241);
 }
 
+#indicatorDetails, header, footer {
+	font-size: 1.1em;
+}
+
 header {
 	text-align: center;
 	background: none;
@@ -77,8 +81,8 @@ footer {
 	text-align: center;
 	position: fixed;
 	top: 3em;
-	left: 15%;
-	right: 15%;
+	left: 10%;
+	right: 10%;
 	bottom: 3em;
 	background-color: lightgray;
 	border: 1px solid #333;
@@ -176,6 +180,8 @@ footer {
 .futureScenarioButton {
 	margin: 0;
 	width: 33.33%;
+	height: 3.5em;
+	vertical-align: bottom;
 	background-color: #ccc;
 	border-radius: 2px 2px 0 0;
 	font-family: 'Work Sans', sans-serif;
@@ -237,4 +243,15 @@ footer {
 
 #sdgIcons {
 	border-left: 2px solid black;
+}
+
+@media (orientation: portrait) {
+	#indicatorDetails, header, footer {
+		font-size: 1.5em;
+	}
+
+	#indicatorDetails {
+		left: 5%;
+		right: 5%;
+	}
 }

@@ -11,57 +11,52 @@ var C = {
 
 	IN_RADIUS: 190,
 	OUT_RADIUS: 270,
-	IN_RADIUS_PUSH: -60,
+	IN_RADIUS_PUSH: -40,
 	OUT_RADIUS_PUSH: 80,
 	CENTR_RADIUS: 110
 }
 
-var eyeSize = 0;
-if (window.innerWidth > window.innerHeight) {
-	eyeSize = window.innerHeight/7.5;
-} else {
-	eyeSize = window.innerWidth/5.0;
-}
-
-C.IN_RADIUS =  d3.max([170, eyeSize + 80]);
-C.OUT_RADIUS = d3.max([250, eyeSize + 160]);
-
 var cx = window.innerWidth/2;
 var cy = window.innerHeight/2;
 
+window.onresize = function() {
+	if (raw.length > 0) {
+		resize();
+	}
+}
 
-d3.csv("data/indicators_table.csv", function(d) {
-	return 	{
-				name: d["Indicator"],
-				type: d["Type"],
-				comment: d["Comment"],
-				driverBarrier: d["DriverBarrier"],
-				upDown: d["IncreaseDecrease"],
-				bigSmart: d["Big n Smart"],
-				createCope: d["Create n Cope"],
-				shareConnect: d["Share n Connect"],
-				sdgGoals: d["SDGGoals"],
-				FOODWASTE: +d["FOOD WASTE"],
-				BIOENERGY: +d["BIOENERGY"],
-				CLIMATE: +d["CLIMATE"],
-				ECONOMY: +d["ECONOMY"],
-				EDUCATION: +d["EDUCATION"],
-				LAND: +d["LAND"]
-			}
-}).then(function(data) {
-	raw = data;
-	
-	d3.select("#svgCanvas")
-		.attr("width", window.innerWidth)
-		.attr("height", window.innerHeight);
-	
-	drawBackground();
-});
+window.onload = function() {
+	getDimensions();	
+	loadData();
+}
 
+function loadData() {
+	d3.csv("data/indicators_table.csv", function(d) {
+		return 	{
+					name: d["Indicator"],
+					type: d["Type"],
+					comment: d["Comment"],
+					driverBarrier: d["DriverBarrier"],
+					upDown: d["IncreaseDecrease"],
+					bigSmart: d["Big n Smart"],
+					createCope: d["Create n Cope"],
+					shareConnect: d["Share n Connect"],
+					sdgGoals: d["SDGGoals"],
+					FOODWASTE: +d["FOOD WASTE"],
+					BIOENERGY: +d["BIOENERGY"],
+					CLIMATE: +d["CLIMATE"],
+					ECONOMY: +d["ECONOMY"],
+					EDUCATION: +d["EDUCATION"],
+					LAND: +d["LAND"]
+				}
+	}).then(function(data) {
+		raw = data;	
+		getDimensions();
+		drawBackground();
+	});
+}
 
-window.onresize = resize;
-
-function resize() {
+function getDimensions() {
 	d3.select("#svgCanvas")
 		.attr("width", window.innerWidth)
 		.attr("height", window.innerHeight);
@@ -76,11 +71,15 @@ function resize() {
 		eyeSize = window.innerWidth/5.0;
 	}
 	
-	C.IN_RADIUS =  d3.max([170, eyeSize + 80]);
-	C.OUT_RADIUS = d3.max([250, eyeSize + 160]);
+	C.IN_RADIUS =  d3.max([100, eyeSize + 80]);
+	C.OUT_RADIUS = d3.max([180, eyeSize + 160]);
 	/*C.CENTR_RADIUS = d3.max([80, eyeSize]);
 	C.IN_RADIUS_PUSH = d3.max([-40, eyeSize -170]);
 	C.OUT_RADIUS_PUSH = d3.max([80, eyeSize]);*/
+}
+
+function resize() {
+	getDimensions();
 	
 	d3.select("#svgCanvas").selectAll("path.tablet")
 		.classed("selected", false).classed("opened", false)
@@ -427,7 +426,7 @@ function drawBackground() {
 				.style("top", "3em").style("bottom", "3em");
 			
 			d3.select("#backButton").style("top", "100em")
-				.transition().duration(400)
+				.transition().duration(300)
 				.style("top", "2em");
 
 			}
@@ -721,6 +720,10 @@ function drawBackground() {
 
 function goback() {
 	
+	d3.select("#backButton").style("top", "2em")
+				.transition().duration(300)
+				.style("top", "100em");
+	
 	d3.select("#indicatorDetails").style("top", "3em").style("bottom", "3em")
 				.transition().duration(600)
 				.style("top", "100em").style("bottom", "-100em")
@@ -776,9 +779,7 @@ function goback() {
 					}, 60);
 				});
 				
-	d3.select("#backButton").style("top", "2em")
-				.transition().duration(400)
-				.style("top", "100em");
+	
 }
 
 
