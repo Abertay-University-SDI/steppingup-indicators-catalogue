@@ -33,9 +33,9 @@ h1 {
 }
 
 #svgCanvas {
-	position: fixed;
 	margin: 0;
 	background-color: none;
+	overflow-y: auto;
 }
 
 footer {

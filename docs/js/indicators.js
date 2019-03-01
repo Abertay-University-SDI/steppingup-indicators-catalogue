@@ -59,10 +59,10 @@ function loadData() {
 function getDimensions() {
 	d3.select("#svgCanvas")
 		.attr("width", window.innerWidth)
-		.attr("height", window.innerHeight);
+		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 640]));
 	
-	cx = window.innerWidth/2;
-	cy = window.innerHeight/2;
+	cx = document.getElementById("svgCanvas").clientWidth/2;
+	cy = document.getElementById("svgCanvas").clientHeight/2;
 	
 	var eyeSize = 0;
 	if (window.innerWidth > window.innerHeight) {
