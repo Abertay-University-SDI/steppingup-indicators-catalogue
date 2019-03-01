@@ -82,9 +82,68 @@ function resize() {
 	getDimensions();
 	
 	d3.select("#svgCanvas").selectAll("path.tablet")
-		.classed("selected", false).classed("opened", false)
 		.attr("d", function(d, i) {
-				return [
+				if (d3.select(this).classed("opened")) {
+					return [
+						"M",
+						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						"L",
+						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						"A",
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						
+						"L",
+						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						"A",
+						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
+						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15))						
+					].join(" ");
+				} else if (d3.select(this).classed("selected")) {
+					return [
+						"M",
+						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						"L",
+						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						"A",
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						
+						"L",
+						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						"A",
+						C.IN_RADIUS + C.IN_RADIUS_PUSH,
+						C.IN_RADIUS + C.IN_RADIUS_PUSH,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH))						
+					].join(" ");
+					
+				} else {
+					return [
 							"M",
 							cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 							cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
@@ -112,12 +171,10 @@ function resize() {
 							cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 							cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 						].join(" ");
-
-		})
+				}
+			});
 		
 	d3.select("#svgCanvas").selectAll("path.centre")
-		.classed("selected", false)
-		.style("fill", "#42556d")
 		.attr("d", function(d, i) {
 			return [
 						"M",
@@ -188,9 +245,40 @@ function resize() {
 						cy - (Math.cos( ((i+0.5)/categories.length)*2*Math.PI ) * (C.CENTR_RADIUS - 16))
 						].join(" ");		
 				}
-			})
+			});
 	
-	d3.selectAll(".labelPath").remove();
+	d3.selectAll(".labelPath").attr("d", function(dd) {
+		var i = dd.indicatorIndex;
+		var inRadius = C.IN_RADIUS + C.IN_RADIUS_PUSH;
+		// for text direction
+		// based on proportion of circle
+		if 	( 	( ( (i)/raw.length ) % 1 > 0.0 ) &&
+				( ( (i)/raw.length ) % 1 < 0.5 )
+			) {		
+			// right
+			return [
+			"M",
+			cx + (Math.sin( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius)),
+			cy - (Math.cos( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius)),
+			"L",
+			cx + (Math.sin( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*10)),
+			cy - (Math.cos( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*10))
+			].join(" ");		
+		} else {
+			// left
+			return [
+			"M",
+			cx + (Math.sin( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*9)),
+			cy - (Math.cos( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*9)),
+			"L",
+			cx + (Math.sin( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius)),
+			cy - (Math.cos( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius))
+			].join(" ");
+		}
+	})
+	
+	
+	//d3.selectAll(".labelPath").remove();
 		
 		
 	// WEF ICON
@@ -824,6 +912,7 @@ function selectIndicator(element, d, i, inRadius, outRadius) {
 function createLabel(d, i, inRadius) {
 	// text path
 	d3.select("#svgCanvas").append("path").classed("labelPath", true).attr("id", "labelPath" + String(i))
+	.datum({indicatorData: d, indicatorIndex: i})
 	.attr("d", function() {
 		// for text direction
 		// based on proportion of circle
