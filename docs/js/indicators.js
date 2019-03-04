@@ -33,6 +33,7 @@ window.onload = function() {
 var filteredData = [];
 
 function changeData(innovation, button) {
+	if (d3.selectAll("path.tablet").size() == filteredData.length) {
 	d3.selectAll("#legend button").classed("selected", false);
 	d3.select(button).classed("selected", true);
 	
@@ -45,45 +46,6 @@ function changeData(innovation, button) {
 	
 	// bind
 	var newData = d3.select("#svgCanvas").selectAll("path.tablet").data(filteredData, function(x) { return x.name; });
-	// exit tablets
-	newData
-		.exit()
-		.transition()
-		.duration(400)
-		.attr("d", function(d, i) {
-			return [
-						"M",
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						"L",
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						"A",
-						0,
-						0,
-						0,
-						0,
-						1,
-						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						
-						"L",
-						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						"A",
-						0,
-						0,
-						0,
-						0,
-						0,
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0))						
-					].join(" ");
-
-		}).remove();
-	d3.selectAll(".labelPath").remove();
-	d3.selectAll(".textLab").remove();
-	d3.selectAll("path.centre").style("fill", "#42556d").classed("selected", false);
 	
 	// enter tablets
 	
@@ -144,6 +106,8 @@ function changeData(innovation, button) {
 		.classed("selected", false)
 		.classed("opened", false)
 		.on("mouseover", function(d, i) {
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+	
 			if (!d3.select(this).classed("opened")) {
 				d3.select("#lab" + String(i)).style("font-weight", "bold");
 				
@@ -157,14 +121,17 @@ function changeData(innovation, button) {
 					d3.select("#lab" + String(i)).style("font-weight", "bold");
 				}
 			}
+			}
 		})
 		.on("mouseout", function(d, i) {
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+	
 			if (!d3.select(this).classed("opened")) {
 				d3.select("#lab" + String(i)).style("font-weight", "normal");
 				
 				// DESELECT
 				if (!d3.select(this).classed("selected")) {
-					d3.select(this).transition("deselectOut").attr("d", function() {
+					d3.select(this).transition("deselectOut2").attr("d", function() {
 						return [
 								"M",
 								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
@@ -201,77 +168,13 @@ function changeData(innovation, button) {
 					selectIndicator(this, d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH, C.OUT_RADIUS + C.OUT_RADIUS_PUSH);
 				}
 			}
+			}
 		})
 		.on("click", function(d) {
 			openIndicator(this, d);
 		})
-		.transition("introTablets").duration(400)//.delay(function(d, i) { return i*20; })
+		.transition("switchTablet").duration(400)
 		.attr("d", function(d, i) {
-			/*if (d3.select(this).classed("opened")) {
-					//createLabel(d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH);
-					
-					
-					return [
-						"M",
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						"L",
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
-						"A",
-						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
-						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
-						0,
-						0,
-						1,
-						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
-						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
-						
-						"L",
-						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						"A",
-						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
-						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
-						0,
-						0,
-						0,
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15))						
-					].join(" ");
-				} else if (d3.select(this).classed("selected")) {
-					//createLabel(d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH);
-					
-					return [
-						"M",
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						"L",
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
-						"A",
-						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
-						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
-						0,
-						0,
-						1,
-						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
-						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
-						
-						"L",
-						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						"A",
-						C.IN_RADIUS + C.IN_RADIUS_PUSH,
-						C.IN_RADIUS + C.IN_RADIUS_PUSH,
-						0,
-						0,
-						0,
-						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH))						
-					].join(" ");
-					
-				} else {*/
 					return [
 							"M",
 							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
@@ -300,9 +203,50 @@ function changeData(innovation, button) {
 							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 						].join(" ");
-				//}
 		});
+		
+		
+		// exit tablets
+	newData
+		.exit()
+		.transition("exitTablet")
+		.attr("d", function(d, i) {
+			return [
+						"M",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"L",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"A",
+						0,
+						0,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						
+						"L",
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"A",
+						0,
+						0,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0))						
+					].join(" ");
 
+		}).remove();
+	d3.selectAll(".labelPath").remove();
+	d3.selectAll(".textLab").remove();
+	d3.selectAll("path.centre").style("fill", "#42556d").classed("selected", false);
+	
+		
+	}
 }
 
 function loadData() {
@@ -625,6 +569,8 @@ function drawBackground() {
 		})
 		.attr("stroke-width", 2)
 		.on("mouseover", function(d, i) {
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+	
 			if (!d3.select(this).classed("opened")) {
 				d3.select("#lab" + String(i)).style("font-weight", "bold");
 				
@@ -638,8 +584,11 @@ function drawBackground() {
 					d3.select("#lab" + String(i)).style("font-weight", "bold");
 				}
 			}
+			}
 		})
 		.on("mouseout", function(d, i) {
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+	
 			if (!d3.select(this).classed("opened")) {
 				d3.select("#lab" + String(i)).style("font-weight", "normal");
 				
@@ -682,9 +631,13 @@ function drawBackground() {
 					selectIndicator(this, d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH, C.OUT_RADIUS + C.OUT_RADIUS_PUSH);
 				}
 			}
+			}
 		})
 		.on("click", function(d) {
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+	
 			openIndicator(this, d);
+			}
 		})
 		.transition("introTablets").duration(400).delay(function(d, i) { return i*20; })
 		.attr("d", function(d, i) {
@@ -762,96 +715,101 @@ function drawBackground() {
 		.attr("stroke", "#000")
 		.attr("stroke-width", 1)
 		.on("mouseover", function(d, i) {
-			if (!d3.select(this).classed("selected")) {
-				d3.select(this).style("fill", "#000");
-			} else {
-				d3.select(this).style("fill", "red");
-			}
-			d3.selectAll("path.tablet").each(function(dd, ii) {
-				if (dd[d] === 1) {
-					d3.select(this).transition("blackOutline").duration(500)
-					.attr("stroke", "black");
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+				if (!d3.select(this).classed("selected")) {
+					d3.select(this).style("fill", "#000");
+				} else {
+					d3.select(this).style("fill", "red");
 				}
-			});
+				d3.selectAll("path.tablet").each(function(dd, ii) {
+					if (dd[d] === 1) {
+						d3.select(this).transition("blackOutline").duration(500)
+						.attr("stroke", "black");
+					}
+				});
+			}
 			
 		})
 		.on("mouseout", function(d, i) {
-			if (!d3.select(this).classed("selected")) {
-				d3.select(this).style("fill", "#42556d");
-			} else {
-				d3.select(this).style("fill", "hsl(0, 100%, 40%)");
-			}
-			d3.selectAll("path.tablet").each(function(dd, ii) {
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+				if (!d3.select(this).classed("selected")) {
+					d3.select(this).style("fill", "#42556d");
+				} else {
+					d3.select(this).style("fill", "hsl(0, 100%, 40%)");
+				}
+				d3.selectAll("path.tablet").each(function(dd, ii) {
 
-				if (dd[d] === 1) {
-					d3.select(this).transition("colourOutline").duration(500).attr("stroke", function() {
+					if (dd[d] === 1) {
+						d3.select(this).transition("colourOutline").duration(500).attr("stroke", function() {
+								switch (dd.type) {
+									case "Ec": return C.EC_COLOUR; break;
+									case "Soc": return C.SOC_COLOUR; break;
+									case "Env": return C.ENV_COLOUR; break;
+									default: return C.MIX_COLOUR; break;
+								}
+						})
+							.attr("fill", function() {
 							switch (dd.type) {
 								case "Ec": return C.EC_COLOUR; break;
 								case "Soc": return C.SOC_COLOUR; break;
 								case "Env": return C.ENV_COLOUR; break;
 								default: return C.MIX_COLOUR; break;
 							}
-					})
-						.attr("fill", function() {
-						switch (dd.type) {
-							case "Ec": return C.EC_COLOUR; break;
-							case "Soc": return C.SOC_COLOUR; break;
-							case "Env": return C.ENV_COLOUR; break;
-							default: return C.MIX_COLOUR; break;
-						}
-					});
-				}
-			});
-		
+						});
+					}
+				});
+			}
 		})
 		.on("click", function(d, i) {
-			
-			// DESELECT OLD
-			// note transition same name to avoid switch
-			d3.selectAll("path.tablet").transition("select").attr("d", function(dd, ii) {
-				d3.select("#" + "lab" + String(ii)).remove();
-				d3.select("#" + "labelPath" + String(ii)).remove();
-				d3.select(this).classed("selected", false);
-			
-				return [
-						"M",
-						cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						"L",
-						cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						"A",
-						C.OUT_RADIUS,
-						C.OUT_RADIUS,
-						0,
-						0,
-						1,
-						cx + (Math.sin( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						cy - (Math.cos( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						
-						"L",
-						cx + (Math.sin( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						"A",
-						C.IN_RADIUS,
-						C.IN_RADIUS,
-						0,
-						0,
-						0,
-						cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
-					].join(" ");
+			if (d3.selectAll("path.tablet").size() == filteredData.length) {
+				// DESELECT OLD
+				// note transition same name to avoid overlapping categories from not working properly
+				d3.selectAll("path.tablet").transition("select").attr("d", function(dd, ii) {
+					d3.select("#" + "lab" + String(ii)).remove();
+					d3.select("#" + "labelPath" + String(ii)).remove();
+					d3.select(this).classed("selected", false);
+				
+					return [
+							"M",
+							cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							"L",
+							cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							"A",
+							C.OUT_RADIUS,
+							C.OUT_RADIUS,
+							0,
+							0,
+							1,
+							cx + (Math.sin( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cy - (Math.cos( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							
+							"L",
+							cx + (Math.sin( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							"A",
+							C.IN_RADIUS,
+							C.IN_RADIUS,
+							0,
+							0,
+							0,
+							cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+						].join(" ");
 
-			})
-			
+				});
+				
 				if (!d3.select(this).classed("selected")) {
 					d3.selectAll("path.centre").style("fill", "#42556d").classed("selected", false);			
 					d3.select(this).style("fill", "#f00").classed("selected", true);
 
 					// SELECT NEW
 					d3.selectAll(".textLab, .labelPath").remove();
+					
 					d3.selectAll("path.tablet").each(function(dd, ii) {
 						if (dd[d] === 1) {
+							// DANGER: not all have been deleted and not all have been created (ii incorrect)
 							d3.select(this).classed("selected", true);
 							selectIndicator(this, dd, ii, C.IN_RADIUS + C.IN_RADIUS_PUSH, C.OUT_RADIUS + C.OUT_RADIUS_PUSH);
 							createLabel(dd, ii, C.IN_RADIUS + C.IN_RADIUS_PUSH);
@@ -862,7 +820,7 @@ function drawBackground() {
 					d3.selectAll("path.centre").style("fill", "#42556d").classed("selected", false);
 					d3.select(this).style("fill", "#000");
 				}
-			
+			}
 		})
 		.each(function(d, i) {
 
@@ -1039,6 +997,7 @@ function goback() {
 
 
 function openIndicator(element, d, i) {
+	if (d3.selectAll("path.tablet").size() == filteredData.length) {
 	
 			if (d3.selectAll("path.tablet.opened").size() < 1) {
 			// KEEP OPEN
@@ -1152,10 +1111,11 @@ function openIndicator(element, d, i) {
 				.style("top", "2em");
 
 			}
-	
+	}
 }
 
 function selectIndicator(element, d, i, inRadius, outRadius) {
+	if (d3.selectAll("path.tablet").size() == filteredData.length) {
 	
 	d3.select(element).transition("select").attr("d", function() {
 				return [
@@ -1189,7 +1149,7 @@ function selectIndicator(element, d, i, inRadius, outRadius) {
 
 			});
 			
-			
+	}
 }
 
 function createLabel(d, i, inRadius) {
