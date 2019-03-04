@@ -32,7 +32,10 @@ window.onload = function() {
 
 var filteredData = [];
 
-function changeData(innovation) {
+function changeData(innovation, button) {
+	d3.selectAll("#legend button").classed("selected", false);
+	d3.select(button).classed("selected", true);
+	
 	filteredData = [];
 	for (r = 0; r < raw.length; r++) {
 		if (raw[r][innovation] == 1) {

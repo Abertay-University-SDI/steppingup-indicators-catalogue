@@ -23,9 +23,16 @@
 		<main id="main">
 			<svg id="svgCanvas"></svg>
 			<div id="legend">
-				<button onclick="changeData('InsectProteinInnovation')">Insect Protein</button>
-				<button onclick="changeData('ADInnovation')">Anaerobic Digestion</button>
-				<button onclick="changeData('FoodRedistributionInnovation')">Food Redistribution</button>
+				<h2>Innovations</h2>
+				<button onclick="changeData('InsectProteinInnovation', this)"><img src="img/iconmonstr-bug-4.svg">Insect Protein</button>
+				<button onclick="changeData('ADInnovation', this)"><img src="img/iconmonstr-light-bulb-6.svg">Anaerobic Digestion</button>
+				<button onclick="changeData('FoodRedistributionInnovation', this)"><img src="img/iconmonstr-eat-4.svg">Food Redistribution</button>
+				<h3>Pillars of Sustainability</h3>
+				<ul id="pillars">
+					<li><span id="envPillar"> </span> Environmental</li>
+					<li><span id="socPillar"> </span> Social</li>
+					<li><span id="ecPillar"> </span> Economic</li>
+				</ul>
 			</div>
 			<section id="indicatorDetails" hidden>
 				<button id="backButton" onclick="goback()">x</button>
