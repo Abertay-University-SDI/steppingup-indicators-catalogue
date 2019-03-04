@@ -55,6 +55,17 @@ footer {
 	opacity: 1;
 }
 
+#legend {
+	position: fixed;
+	top: 100px;
+	right: 100px;
+	width: 100px;
+}
+
+#legend button {
+	margin: 1em;
+}
+
 /**/
 /**/
 /**/

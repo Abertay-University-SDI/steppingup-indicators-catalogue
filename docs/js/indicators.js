@@ -20,7 +20,7 @@ var cx = window.innerWidth/2;
 var cy = window.innerHeight/2;
 
 window.onresize = function() {
-	if (raw.length > 0) {
+	if (filteredData.length > 0) {
 		resize();
 	}
 }
@@ -28,6 +28,278 @@ window.onresize = function() {
 window.onload = function() {
 	getDimensions();	
 	loadData();
+}
+
+var filteredData = [];
+
+function changeData(innovation) {
+	filteredData = [];
+	for (r = 0; r < raw.length; r++) {
+		if (raw[r][innovation] == 1) {
+			filteredData.push(raw[r]);
+		}
+	}
+	
+	// bind
+	var newData = d3.select("#svgCanvas").selectAll("path.tablet").data(filteredData, function(x) { return x.name; });
+	// exit tablets
+	newData
+		.exit()
+		.transition()
+		.duration(400)
+		.attr("d", function(d, i) {
+			return [
+						"M",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"L",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"A",
+						0,
+						0,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						
+						"L",
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"A",
+						0,
+						0,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0))						
+					].join(" ");
+
+		}).remove();
+	d3.selectAll(".labelPath").remove();
+	d3.selectAll(".textLab").remove();
+	d3.selectAll("path.centre").style("fill", "#42556d").classed("selected", false);
+	
+	// enter tablets
+	
+	// Indicators
+	newData
+		.enter()
+		.append("path")
+		.classed("tablet", true)
+		.attr("d", function(d, i) {
+			return [
+						"M",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"L",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"A",
+						0,
+						0,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						
+						"L",
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						"A",
+						0,
+						0,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0))						
+					].join(" ");
+
+		})
+		.attr("fill", function(d) {
+			switch (d.type) {
+				case "Ec": return C.EC_COLOUR; break;
+				case "Soc": return C.SOC_COLOUR; break;
+				case "Env": return C.ENV_COLOUR; break;
+				default: return C.MIX_COLOUR; break;
+			}
+		})
+		.attr("stroke", function(d) {
+			switch (d.type) {
+				case "Ec": return C.EC_COLOUR; break;
+				case "Soc": return C.SOC_COLOUR; break;
+				case "Env": return C.ENV_COLOUR; break;
+				default: return C.MIX_COLOUR; break;
+			}
+		})
+		.attr("stroke-width", 2)
+		.merge(newData)
+		.classed("selected", false)
+		.classed("opened", false)
+		.on("mouseover", function(d, i) {
+			if (!d3.select(this).classed("opened")) {
+				d3.select("#lab" + String(i)).style("font-weight", "bold");
+				
+				// SELECT
+				if (!d3.select(this).classed("selected")) {
+					selectIndicator(this, d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH - 15, C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30);
+					createLabel(d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH);
+					d3.select("#lab" + String(i)).style("font-weight", "bold");
+				} else {
+					selectIndicator(this, d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH - 15, C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30);
+					d3.select("#lab" + String(i)).style("font-weight", "bold");
+				}
+			}
+		})
+		.on("mouseout", function(d, i) {
+			if (!d3.select(this).classed("opened")) {
+				d3.select("#lab" + String(i)).style("font-weight", "normal");
+				
+				// DESELECT
+				if (!d3.select(this).classed("selected")) {
+					d3.select(this).transition("deselectOut").attr("d", function() {
+						return [
+								"M",
+								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								"L",
+								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								"A",
+								C.OUT_RADIUS,
+								C.OUT_RADIUS,
+								0,
+								0,
+								1,
+								cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								
+								"L",
+								cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								"A",
+								C.IN_RADIUS,
+								C.IN_RADIUS,
+								0,
+								0,
+								0,
+								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+							].join(" ");
+
+					});
+					d3.select("#lab" + String(i)).remove();
+					d3.select("#labelPath" + String(i)).remove();
+				} else {
+					selectIndicator(this, d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH, C.OUT_RADIUS + C.OUT_RADIUS_PUSH);
+				}
+			}
+		})
+		.on("click", function(d) {
+			openIndicator(this, d);
+		})
+		.transition("introTablets").duration(400)//.delay(function(d, i) { return i*20; })
+		.attr("d", function(d, i) {
+			/*if (d3.select(this).classed("opened")) {
+					//createLabel(d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH);
+					
+					
+					return [
+						"M",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						"L",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						"A",
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						
+						"L",
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						"A",
+						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
+						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15))						
+					].join(" ");
+				} else if (d3.select(this).classed("selected")) {
+					//createLabel(d, i, C.IN_RADIUS + C.IN_RADIUS_PUSH);
+					
+					return [
+						"M",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						"L",
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						"A",
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
+						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
+						0,
+						0,
+						1,
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						
+						"L",
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						"A",
+						C.IN_RADIUS + C.IN_RADIUS_PUSH,
+						C.IN_RADIUS + C.IN_RADIUS_PUSH,
+						0,
+						0,
+						0,
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH))						
+					].join(" ");
+					
+				} else {*/
+					return [
+							"M",
+							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							"L",
+							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							"A",
+							C.OUT_RADIUS,
+							C.OUT_RADIUS,
+							0,
+							0,
+							1,
+							cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							
+							"L",
+							cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							"A",
+							C.IN_RADIUS,
+							C.IN_RADIUS,
+							0,
+							0,
+							0,
+							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+						].join(" ");
+				//}
+		});
+
 }
 
 function loadData() {
@@ -42,6 +314,9 @@ function loadData() {
 					createCope: d["Create n Cope"],
 					shareConnect: d["Share n Connect"],
 					sdgGoals: d["SDGGoals"],
+					InsectProteinInnovation: +d["InsectProteinInnovation"],
+					ADInnovation: +d["ADInnovation"],
+					FoodRedistributionInnovation: +d["FoodRedistributionInnovation"],
 					FOODWASTE: +d["FOOD WASTE"],
 					BIOENERGY: +d["BIOENERGY"],
 					CLIMATE: +d["CLIMATE"],
@@ -51,6 +326,7 @@ function loadData() {
 				}
 	}).then(function(data) {
 		raw = data;	
+		filteredData = raw;
 		getDimensions();
 		drawBackground();
 	});
@@ -86,90 +362,90 @@ function resize() {
 				if (d3.select(this).classed("opened")) {
 					return [
 						"M",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
 						"L",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
 						"A",
 						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
 						C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH + 30)),
 						
 						"L",
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
 						"A",
 						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
 						C.IN_RADIUS + C.IN_RADIUS_PUSH - 15,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15))						
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH - 15))						
 					].join(" ");
 				} else if (d3.select(this).classed("selected")) {
 					return [
 						"M",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
 						"L",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
 						"A",
 						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
 						C.OUT_RADIUS + C.OUT_RADIUS_PUSH,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS + C.OUT_RADIUS_PUSH)),
 						
 						"L",
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
 						"A",
 						C.IN_RADIUS + C.IN_RADIUS_PUSH,
 						C.IN_RADIUS + C.IN_RADIUS_PUSH,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH))						
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS + C.IN_RADIUS_PUSH))						
 					].join(" ");
 					
 				} else {
 					return [
 							"M",
-							cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-							cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 							"L",
-							cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-							cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 							"A",
 							C.OUT_RADIUS,
 							C.OUT_RADIUS,
 							0,
 							0,
 							1,
-							cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-							cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+							cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 							
 							"L",
-							cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-							cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 							"A",
 							C.IN_RADIUS,
 							C.IN_RADIUS,
 							0,
 							0,
 							0,
-							cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-							cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+							cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+							cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 						].join(" ");
 				}
 			});
@@ -252,30 +528,30 @@ function resize() {
 		var inRadius = C.IN_RADIUS + C.IN_RADIUS_PUSH;
 		// for text direction
 		// based on proportion of circle
-		if 	( 	( ( (i)/raw.length ) % 1 > 0.0 ) &&
-				( ( (i)/raw.length ) % 1 < 0.5 )
+		if 	( 	( ( (i)/filteredData.length ) % 1 > 0.0 ) &&
+				( ( (i)/filteredData.length ) % 1 < 0.5 )
 			) {		
 			// right
 			return [
 			"M",
-			cx + (Math.sin( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius)),
-			cy - (Math.cos( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius)),
+			cx + (Math.sin( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius)),
+			cy - (Math.cos( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius)),
 			"L",
-			cx + (Math.sin( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*10)),
-			cy - (Math.cos( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*10))
+			cx + (Math.sin( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*10)),
+			cy - (Math.cos( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*10))
 			].join(" ");		
 		} else {
 			// left
 			return [
 			"M",
-			cx + (Math.sin( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*9)),
-			cy - (Math.cos( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*9)),
+			cx + (Math.sin( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*9)),
+			cy - (Math.cos( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius + dd.indicatorData.name.length*9)),
 			"L",
-			cx + (Math.sin( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius)),
-			cy - (Math.cos( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius))
+			cx + (Math.sin( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius)),
+			cy - (Math.cos( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius))
 			].join(" ");
 		}
-	})
+	});
 	
 	
 	//d3.selectAll(".labelPath").remove();
@@ -293,38 +569,38 @@ function drawBackground() {
 	
 		
 	// Indicators
-	d3.select("#svgCanvas").selectAll("path.tablet").data(raw, function(x) { return x.name; })
+	d3.select("#svgCanvas").selectAll("path.tablet").data(filteredData, function(x) { return x.name; })
 		.enter()
 		.append("path")
 		.classed("tablet", true)
 		.attr("d", function(d, i) {
 			return [
 						"M",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						"L",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						"A",
 						0,
 						0,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						
 						"L",
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						"A",
 						0,
 						0,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0))						
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0))						
 					].join(" ");
 
 		})
@@ -369,31 +645,31 @@ function drawBackground() {
 					d3.select(this).transition("deselectOut").attr("d", function() {
 						return [
 								"M",
-								cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-								cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 								"L",
-								cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-								cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 								"A",
 								C.OUT_RADIUS,
 								C.OUT_RADIUS,
 								0,
 								0,
 								1,
-								cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-								cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+								cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 								
 								"L",
-								cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-								cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 								"A",
 								C.IN_RADIUS,
 								C.IN_RADIUS,
 								0,
 								0,
 								0,
-								cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-								cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+								cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 							].join(" ");
 
 					});
@@ -405,149 +681,37 @@ function drawBackground() {
 			}
 		})
 		.on("click", function(d) {
-			
-			if (d3.selectAll("path.tablet.opened").size() < 1) {
-			// KEEP OPEN
-			d3.select(this).classed("opened", true);
-			
-			// OPEN INDICATOR DETAILS
-			// UPDATE DETAILS
-			d3.select("#indicatorDetails").style("background-color", function() {
-				switch(d.type) {
-					case "Ec": return C.EC_COLOUR; break;
-					case "Soc": return C.SOC_COLOUR; break;
-					case "Env": return C.ENV_COLOUR; break;
-					default: return C.MIX_COLOUR; break;
-				}
-			});
-			
-			d3.select("#driverBarrier").text(function() {
-				if (d.driverBarrier === "Driver") {
-					d3.select(this).style("color", "rgb(0, 120 , 0)");
-					return "Innovation Driver"
-				} else if (d.driverBarrier === "Barrier") {
-					d3.select(this).style("color", "rgb(120, 0 , 0)");
-					return "Innovation Barrier"
-				} else {
-					return d.driverBarrier;
-				}
-			});
-
-			d3.select("#upDown").text(function() {
-				if (d.upDown === "Decrease") {
-					d3.select(this).style("color", "rgb(120, 0 , 0)");
-					return "Ideally Decrease"
-				} else if (d.upDown === "Increase") {
-					d3.select(this).style("color", "rgb(0, 120 , 0)");
-					return "Ideally Increase"
-				} else {
-					return d.upDown;
-				}
-				return d.upDown;
-			});
-			
-			d3.select("#iDefinition").text(function() {
-				return d.comment;
-			});
-			
-			d3.select("#iTitle").text(function() {
-				return d.name;
-			});
-			
-			d3.select("#futureScenario").classed("selected", false);
-			d3.select("#bns").classed("selected", false);
-			d3.select("#cnc").classed("selected", false);
-			d3.select("#snc").classed("selected", false);
-			d3.select("#futureScenario").text("^ Select a Future Scenario Tab Above ^");
-			
-			d3.select("#bns").on("click", function() {
-				d3.select("#futureScenario").text(function() { return d.bigSmart; });
-				d3.select("#futureScenario").classed("selected", true);
-				d3.select(this).classed("selected", true);
-				d3.select("#cnc").classed("selected", false);
-				d3.select("#snc").classed("selected", false);
-			});
-			
-			d3.select("#cnc").on("click", function() {
-				d3.select("#futureScenario").text(function() { return d.createCope; });
-				d3.select("#futureScenario").classed("selected", true);
-				d3.select(this).classed("selected", true);
-				d3.select("#bns").classed("selected", false);
-				d3.select("#snc").classed("selected", false);
-			});
-			
-			d3.select("#snc").on("click", function() {
-				d3.select("#futureScenario").text(function() { return d.shareConnect; });
-				d3.select("#futureScenario").classed("selected", true);
-				d3.select(this).classed("selected", true);
-				d3.select("#cnc").classed("selected", false);
-				d3.select("#bns").classed("selected", false);
-			});
-			
-			// hide future scenarios if all empty
-			document.getElementById("futureSection").hidden = false;
-			if ( (d.bigSmart.length < 1) && (d.createCope.length < 1) && (d.shareConnect.length < 1) ) {
-				document.getElementById("futureSection").hidden = true;
-			}
-
-			// UN SDG 
-			d3.selectAll("#unsdg *").remove();
-			var sdg = JSON.parse('{ "numbers": [' + d.sdgGoals + ']}');
-				d3.select("#unsdg").selectAll("a")
-					.data(sdg.numbers).enter().append("a")
-					.attr("href", "https://www.un.org/sustainabledevelopment/sustainable-development-goals/")
-					.attr("target", "_blank")
-					.append("img")
-					.attr("src", function(dd, i) {
-						return "img/sdg_icons/E_SDG goals_icons-individual-rgb-" + String(dd) + ".png";
-					})
-					.attr("alt", function(dd, i) {
-						return "UN Sustainable Development Goal Number " + String(dd);
-					})
-					.classed("sdgImg", true);
-			
-			// REVEAL WINDOW
-			
-			document.getElementById("indicatorDetails").hidden = false;
-			d3.select("#indicatorDetails").style("top", "100em").style("bottom", "-100em")
-				.transition().duration(600)
-				.style("top", "3em").style("bottom", "3em");
-			
-			d3.select("#backButton").style("top", "100em")
-				.transition().duration(300)
-				.style("top", "2em");
-
-			}
+			openIndicator(this, d);
 		})
 		.transition("introTablets").duration(400).delay(function(d, i) { return i*20; })
 		.attr("d", function(d, i) {
 			return [
 						"M",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 						"L",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 						"A",
 						C.OUT_RADIUS,
 						C.OUT_RADIUS,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 						
 						"L",
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 						"A",
 						C.IN_RADIUS,
 						C.IN_RADIUS,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 					].join(" ");
 
 		});
@@ -563,31 +727,31 @@ function drawBackground() {
 		.attr("d", function(d, i) {
 			return [
 						"M",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						"L",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						"A",
 						0,
 						0,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						
 						"L",
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
 						"A",
 						0,
 						0,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (0))						
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (0))						
 					].join(" ");
 
 		})
@@ -648,31 +812,31 @@ function drawBackground() {
 			
 				return [
 						"M",
-						cx + (Math.sin( (((ii-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((ii-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 						"L",
-						cx + (Math.sin( (((ii-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						cy - (Math.cos( (((ii-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 						"A",
 						C.OUT_RADIUS,
 						C.OUT_RADIUS,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((ii)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-						cy - (Math.cos( (((ii)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cx + (Math.sin( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+						cy - (Math.cos( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 						
 						"L",
-						cx + (Math.sin( (((ii)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((ii)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cx + (Math.sin( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cy - (Math.cos( (((ii)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 						"A",
 						C.IN_RADIUS,
 						C.IN_RADIUS,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((ii-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-						cy - (Math.cos( (((ii-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+						cx + (Math.sin( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+						cy - (Math.cos( (((ii-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 					].join(" ");
 
 			})
@@ -828,31 +992,31 @@ function goback() {
 									d3.select(this).transition("deselectBack").attr("d", function() {
 										return [
 												"M",
-												cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-												cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+												cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+												cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 												"L",
-												cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-												cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+												cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+												cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 												"A",
 												C.OUT_RADIUS,
 												C.OUT_RADIUS,
 												0,
 												0,
 												1,
-												cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
-												cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+												cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
+												cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.OUT_RADIUS)),
 												
 												"L",
-												cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-												cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+												cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+												cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
 												"A",
 												C.IN_RADIUS,
 												C.IN_RADIUS,
 												0,
 												0,
 												0,
-												cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
-												cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
+												cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
+												cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS))						
 											].join(" ");
 
 									});
@@ -871,37 +1035,153 @@ function goback() {
 }
 
 
+function openIndicator(element, d, i) {
+	
+			if (d3.selectAll("path.tablet.opened").size() < 1) {
+			// KEEP OPEN
+			d3.select(element).classed("opened", true);
+			
+			// OPEN INDICATOR DETAILS
+			// UPDATE DETAILS
+			d3.select("#indicatorDetails").style("background-color", function() {
+				switch(d.type) {
+					case "Ec": return C.EC_COLOUR; break;
+					case "Soc": return C.SOC_COLOUR; break;
+					case "Env": return C.ENV_COLOUR; break;
+					default: return C.MIX_COLOUR; break;
+				}
+			});
+			
+			d3.select("#driverBarrier").text(function() {
+				if (d.driverBarrier === "Driver") {
+					d3.select(element).style("color", "rgb(0, 120 , 0)");
+					return "Innovation Driver"
+				} else if (d.driverBarrier === "Barrier") {
+					d3.select(element).style("color", "rgb(120, 0 , 0)");
+					return "Innovation Barrier"
+				} else {
+					return d.driverBarrier;
+				}
+			});
+
+			d3.select("#upDown").text(function() {
+				if (d.upDown === "Decrease") {
+					d3.select(element).style("color", "rgb(120, 0 , 0)");
+					return "Ideally Decrease"
+				} else if (d.upDown === "Increase") {
+					d3.select(element).style("color", "rgb(0, 120 , 0)");
+					return "Ideally Increase"
+				} else {
+					return d.upDown;
+				}
+				return d.upDown;
+			});
+			
+			d3.select("#iDefinition").text(function() {
+				return d.comment;
+			});
+			
+			d3.select("#iTitle").text(function() {
+				return d.name;
+			});
+			
+			d3.select("#futureScenario").classed("selected", false);
+			d3.select("#bns").classed("selected", false);
+			d3.select("#cnc").classed("selected", false);
+			d3.select("#snc").classed("selected", false);
+			d3.select("#futureScenario").text("^ Select a Future Scenario Tab Above ^");
+			
+			d3.select("#bns").on("click", function() {
+				d3.select("#futureScenario").text(function() { return d.bigSmart; });
+				d3.select("#futureScenario").classed("selected", true);
+				d3.select(element).classed("selected", true);
+				d3.select("#cnc").classed("selected", false);
+				d3.select("#snc").classed("selected", false);
+			});
+			
+			d3.select("#cnc").on("click", function() {
+				d3.select("#futureScenario").text(function() { return d.createCope; });
+				d3.select("#futureScenario").classed("selected", true);
+				d3.select(element).classed("selected", true);
+				d3.select("#bns").classed("selected", false);
+				d3.select("#snc").classed("selected", false);
+			});
+			
+			d3.select("#snc").on("click", function() {
+				d3.select("#futureScenario").text(function() { return d.shareConnect; });
+				d3.select("#futureScenario").classed("selected", true);
+				d3.select(element).classed("selected", true);
+				d3.select("#cnc").classed("selected", false);
+				d3.select("#bns").classed("selected", false);
+			});
+			
+			// hide future scenarios if all empty
+			document.getElementById("futureSection").hidden = false;
+			if ( (d.bigSmart.length < 1) && (d.createCope.length < 1) && (d.shareConnect.length < 1) ) {
+				document.getElementById("futureSection").hidden = true;
+			}
+
+			// UN SDG 
+			d3.selectAll("#unsdg *").remove();
+			var sdg = JSON.parse('{ "numbers": [' + d.sdgGoals + ']}');
+				d3.select("#unsdg").selectAll("a")
+					.data(sdg.numbers).enter().append("a")
+					.attr("href", "https://www.un.org/sustainabledevelopment/sustainable-development-goals/")
+					.attr("target", "_blank")
+					.append("img")
+					.attr("src", function(dd, i) {
+						return "img/sdg_icons/E_SDG goals_icons-individual-rgb-" + String(dd) + ".png";
+					})
+					.attr("alt", function(dd, i) {
+						return "UN Sustainable Development Goal Number " + String(dd);
+					})
+					.classed("sdgImg", true);
+			
+			// REVEAL WINDOW
+			
+			document.getElementById("indicatorDetails").hidden = false;
+			d3.select("#indicatorDetails").style("top", "100em").style("bottom", "-100em")
+				.transition().duration(600)
+				.style("top", "3em").style("bottom", "3em");
+			
+			d3.select("#backButton").style("top", "100em")
+				.transition().duration(300)
+				.style("top", "2em");
+
+			}
+	
+}
 
 function selectIndicator(element, d, i, inRadius, outRadius) {
 	
 	d3.select(element).transition("select").attr("d", function() {
 				return [
 						"M",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (inRadius)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (inRadius)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (inRadius)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (inRadius)),
 						"L",
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (outRadius)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (outRadius)),
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (outRadius)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (outRadius)),
 						"A",
 						outRadius,
 						outRadius,
 						0,
 						0,
 						1,
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (outRadius)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (outRadius)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (outRadius)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (outRadius)),
 						
 						"L",
-						cx + (Math.sin( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (inRadius)),
-						cy - (Math.cos( (((i)/raw.length) - (((1)/raw.length)/10) )*2*Math.PI ) * (inRadius)),
+						cx + (Math.sin( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (inRadius)),
+						cy - (Math.cos( (((i)/filteredData.length) - (((1)/filteredData.length)/10) )*2*Math.PI ) * (inRadius)),
 						"A",
 						inRadius,
 						inRadius,
 						0,
 						0,
 						0,
-						cx + (Math.sin( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (inRadius)),
-						cy - (Math.cos( (((i-1)/raw.length) + (((1)/raw.length)/10) )*2*Math.PI ) * (inRadius))						
+						cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (inRadius)),
+						cy - (Math.cos( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (inRadius))						
 					].join(" ");
 
 			});
@@ -916,27 +1196,27 @@ function createLabel(d, i, inRadius) {
 	.attr("d", function() {
 		// for text direction
 		// based on proportion of circle
-		if 	( 	( ( (i)/raw.length ) % 1 > 0.0 ) &&
-				( ( (i)/raw.length ) % 1 < 0.5 )
+		if 	( 	( ( (i)/filteredData.length ) % 1 > 0.0 ) &&
+				( ( (i)/filteredData.length ) % 1 < 0.5 )
 			) {		
 			// right
 			return [
 			"M",
-			cx + (Math.sin( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius)),
-			cy - (Math.cos( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius)),
+			cx + (Math.sin( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius)),
+			cy - (Math.cos( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius)),
 			"L",
-			cx + (Math.sin( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius + d.name.length*10)),
-			cy - (Math.cos( ((i-0.3)/raw.length)*2*Math.PI ) * (inRadius + d.name.length*10))
+			cx + (Math.sin( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius + d.name.length*10)),
+			cy - (Math.cos( ((i-0.3)/filteredData.length)*2*Math.PI ) * (inRadius + d.name.length*10))
 			].join(" ");		
 		} else {
 			// left
 			return [
 			"M",
-			cx + (Math.sin( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius + d.name.length*9)),
-			cy - (Math.cos( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius + d.name.length*9)),
+			cx + (Math.sin( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius + d.name.length*9)),
+			cy - (Math.cos( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius + d.name.length*9)),
 			"L",
-			cx + (Math.sin( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius)),
-			cy - (Math.cos( ((i-0.7)/raw.length)*2*Math.PI ) * (inRadius))
+			cx + (Math.sin( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius)),
+			cy - (Math.cos( ((i-0.7)/filteredData.length)*2*Math.PI ) * (inRadius))
 			].join(" ");
 		}
 	})
