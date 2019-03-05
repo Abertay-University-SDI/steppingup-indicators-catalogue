@@ -514,6 +514,36 @@ function resize() {
 		}
 	});
 	
+	d3.select("#centreCentre")
+		.attr("cx", cx)
+		.attr("cy", cy);
+	
+	
+		
+	d3.select("#ipIcon")
+		.attr("cx", cx - 36)
+		.attr("cy", cy + 22);
+		
+	d3.select("#frIcon")
+		.attr("cx", cx + 36)
+		.attr("cy", cy + 22);
+		
+	d3.select("#adIcon")
+		.attr("cx", cx)
+		.attr("cy", cy - 40);
+
+	d3.select("#ipIconImage")
+		.attr("x", cx - 57)
+		.attr("y", cy + 2);
+		
+	d3.select("#frIconImage")
+		.attr("x", cx + 16)
+		.attr("y", cy + 2);
+		
+	d3.select("#adIconImage")
+		.attr("x", cx - 20)
+		.attr("y", cy - 61);
+	
 	
 	//d3.selectAll(".labelPath").remove();
 	
@@ -907,12 +937,15 @@ function drawBackground() {
 		
 	// Innovation Icons
 	d3.select("#svgCanvas").append("circle")
-		.attr("r", 80)
+		.attr("id", "centreCentre")
+		.attr("r", 20)
 		.attr("cx", cx)
 		.attr("cy", cy)
 		.attr("fill", "#20334b")
 		.attr("stroke", "black")
-		.attr("stroke-width", 1);
+		.attr("stroke-width", 1)
+		.transition("introCentre").duration(600).delay(200)
+		.attr("r", 80);
 	
 	
 		
@@ -980,6 +1013,7 @@ function drawBackground() {
 		});
 		
 	d3.select("#svgCanvas").append("image")
+		.attr("id", "ipIconImage")
 		.attr('xlink:href', 'img/iconmonstr-bug-4w.svg')
 		.attr('width', 40)
 		.attr('height', 40)
@@ -988,6 +1022,7 @@ function drawBackground() {
 		.classed("nopointer", true);
 		
 	d3.select("#svgCanvas").append("image")
+		.attr("id", "frIconImage")
 		.attr('xlink:href', 'img/iconmonstr-eat-4w.svg')
 		.attr('width', 40)
 		.attr('height', 40)
@@ -996,6 +1031,7 @@ function drawBackground() {
 		.classed("nopointer", true);
 		
 	d3.select("#svgCanvas").append("image")
+		.attr("id", "adIconImage")
 		.attr('xlink:href', 'img/iconmonstr-light-bulb-6w.svg')
 		.attr('width', 40)
 		.attr('height', 40)
