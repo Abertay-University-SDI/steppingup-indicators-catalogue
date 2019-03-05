@@ -24,14 +24,17 @@
 			<svg id="svgCanvas"></svg>
 			<div id="legend">
 				<h2>Innovations</h2>
-				<button onclick="changeData('InsectProteinInnovation', this)"><img src="img/iconmonstr-bug-4.svg">Insect Protein</button>
-				<button onclick="changeData('ADInnovation', this)"><img src="img/iconmonstr-light-bulb-6.svg">Anaerobic Digestion</button>
-				<button onclick="changeData('FoodRedistributionInnovation', this)"><img src="img/iconmonstr-eat-4.svg">Food Redistribution</button>
+				<button id="ipBtn" onclick="changeData('InsectProteinInnovation', this, document.getElementById('ipIcon'))"><img src="img/iconmonstr-bug-4w.svg">Insect Protein</button>
+				<button id="adBtn" onclick="changeData('ADInnovation', this, document.getElementById('adIcon'))"><img src="img/iconmonstr-light-bulb-6w.svg">Anaerobic Digestion</button>
+				<button id="frBtn" onclick="changeData('FoodRedistributionInnovation', this, document.getElementById('frIcon'))"><img src="img/iconmonstr-eat-4w.svg">Food Redistribution</button>
 				<h3>Pillars of Sustainability</h3>
 				<ul id="pillars">
-					<li><span id="envPillar"> </span> Environmental</li>
-					<li><span id="socPillar"> </span> Social</li>
 					<li><span id="ecPillar"> </span> Economic</li>
+					<li><span id="socEcPillar"> </span> Socio-Economic</li>
+					<li><span id="socPillar"> </span> Social</li>
+					<li><span id="socEnvPillar"> </span> Socio-Environmental</li>
+					<li><span id="envPillar"> </span> Environmental</li>
+					<li><span id="allPillar"> </span> All Pillars</li>
 				</ul>
 			</div>
 			<section id="indicatorDetails" hidden>

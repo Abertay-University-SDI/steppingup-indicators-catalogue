@@ -5,15 +5,17 @@ var C = {
 	CANVAS_COLOUR: "rgb(206, 235, 241)",
 	
 	EC_COLOUR: "hsl(200, 100%, 50%)",
-	ENV_COLOUR: "hsl(100, 100%, 45%)",
+	ENV_COLOUR: "hsl(100, 100%, 42%)",
 	SOC_COLOUR: "hsl(40, 100%, 50%)",
-	MIX_COLOUR: "hsl(260, 100%, 65%)",
+	SOC_EC_COLOUR: "hsl(275, 70%, 65%)",
+	SOC_ENV_COLOUR: "hsl(70, 100%, 35%)",
+	ALL_COLOUR: "hsl(0, 0%, 65%)",
 
 	IN_RADIUS: 190,
 	OUT_RADIUS: 270,
-	IN_RADIUS_PUSH: -40,
-	OUT_RADIUS_PUSH: 80,
-	CENTR_RADIUS: 110
+	IN_RADIUS_PUSH: -30,
+	OUT_RADIUS_PUSH: 90,
+	CENTR_RADIUS: 120
 }
 
 var cx = window.innerWidth/2;
@@ -32,15 +34,37 @@ window.onload = function() {
 
 var filteredData = [];
 
-function changeData(innovation, button) {
+function getIndicatorColour(type) {
+	switch (type) {
+		case "Ec": return C.EC_COLOUR; break;
+		case "Soc": return C.SOC_COLOUR; break;
+		case "Env": return C.ENV_COLOUR; break;
+		case "Soc/Env": return C.SOC_ENV_COLOUR; break;
+		case "Soc/Ec": return C.SOC_EC_COLOUR; break;
+		default: return C.ALL_COLOUR; break;
+	}
+}
+
+function changeData(innovation, button, icon) {
 	if (d3.selectAll("path.tablet").size() == filteredData.length) {
-	d3.selectAll("#legend button").classed("selected", false);
-	d3.select(button).classed("selected", true);
 	
-	filteredData = [];
-	for (r = 0; r < raw.length; r++) {
-		if (raw[r][innovation] == 1) {
-			filteredData.push(raw[r]);
+	if (d3.select(button).classed("selected") || d3.select(icon).classed("selected")) {
+		d3.selectAll("#legend button").classed("selected", false);
+		d3.selectAll(".innovationIcon").classed("selected", false).attr("fill", "#64778f");
+		filteredData = raw;
+	} else {
+	
+		d3.selectAll("#legend button").classed("selected", false);
+		d3.select(button).classed("selected", true);
+
+		d3.selectAll(".innovationIcon").classed("selected", false).attr("fill", "#64778f");
+		d3.select(icon).classed("selected", true).attr("fill", "red");
+		
+		filteredData = [];
+		for (r = 0; r < raw.length; r++) {
+			if (raw[r][innovation] == 1) {
+				filteredData.push(raw[r]);
+			}
 		}
 	}
 	
@@ -86,20 +110,10 @@ function changeData(innovation, button) {
 
 		})
 		.attr("fill", function(d) {
-			switch (d.type) {
-				case "Ec": return C.EC_COLOUR; break;
-				case "Soc": return C.SOC_COLOUR; break;
-				case "Env": return C.ENV_COLOUR; break;
-				default: return C.MIX_COLOUR; break;
-			}
+			return getIndicatorColour(d.type)
 		})
 		.attr("stroke", function(d) {
-			switch (d.type) {
-				case "Ec": return C.EC_COLOUR; break;
-				case "Soc": return C.SOC_COLOUR; break;
-				case "Env": return C.ENV_COLOUR; break;
-				default: return C.MIX_COLOUR; break;
-			}
+			return getIndicatorColour(d.type)
 		})
 		.attr("stroke-width", 2)
 		.merge(newData)
@@ -502,12 +516,6 @@ function resize() {
 	
 	
 	//d3.selectAll(".labelPath").remove();
-		
-		
-	// WEF ICON
-	d3.select("#wefIcon")
-		.attr("x", cx - 70).attr("y", cy - 70);
-
 	
 }
 
@@ -552,20 +560,10 @@ function drawBackground() {
 
 		})
 		.attr("fill", function(d) {
-			switch (d.type) {
-				case "Ec": return C.EC_COLOUR; break;
-				case "Soc": return C.SOC_COLOUR; break;
-				case "Env": return C.ENV_COLOUR; break;
-				default: return C.MIX_COLOUR; break;
-			}
+			return getIndicatorColour(d.type)
 		})
 		.attr("stroke", function(d) {
-			switch (d.type) {
-				case "Ec": return C.EC_COLOUR; break;
-				case "Soc": return C.SOC_COLOUR; break;
-				case "Env": return C.ENV_COLOUR; break;
-				default: return C.MIX_COLOUR; break;
-			}
+			return getIndicatorColour(d.type)
 		})
 		.attr("stroke-width", 2)
 		.on("mouseover", function(d, i) {
@@ -741,20 +739,10 @@ function drawBackground() {
 
 					if (dd[d] === 1) {
 						d3.select(this).transition("colourOutline").duration(500).attr("stroke", function() {
-								switch (dd.type) {
-									case "Ec": return C.EC_COLOUR; break;
-									case "Soc": return C.SOC_COLOUR; break;
-									case "Env": return C.ENV_COLOUR; break;
-									default: return C.MIX_COLOUR; break;
-								}
+								return getIndicatorColour(dd.type)
 						})
 							.attr("fill", function() {
-							switch (dd.type) {
-								case "Ec": return C.EC_COLOUR; break;
-								case "Soc": return C.SOC_COLOUR; break;
-								case "Env": return C.ENV_COLOUR; break;
-								default: return C.MIX_COLOUR; break;
-							}
+							return getIndicatorColour(dd.type)
 						});
 					}
 				});
@@ -917,17 +905,127 @@ function drawBackground() {
 		});
 		
 		
-	// WEF ICON
-	d3.select("#svgCanvas").append("image")
-		.attr("id", "wefIcon")
-		.attr("width", 140).attr("height", 140)
-		.attr("x", cx - 70).attr("y", cy - 70)
-		.attr("pointer-events", "none")
-		.attr("xlink:href", "img/SteppingUp_WEF_icon.png");
+	// Innovation Icons
+	d3.select("#svgCanvas").append("circle")
+		.attr("r", 80)
+		.attr("cx", cx)
+		.attr("cy", cy)
+		.attr("fill", "#20334b")
+		.attr("stroke", "black")
+		.attr("stroke-width", 1);
+	
 	
 		
+	d3.select("#svgCanvas").append("circle")
+		.attr("id", "ipIcon")
+		.classed("innovationIcon", true)
+		.attr("r", 36)
+		.attr("cx", cx - 36)
+		.attr("cy", cy + 22)
+		.attr("fill", "#64778f")
+		.attr("stroke", "black")
+		.attr("stroke-width", 1)
+		.on("mouseover", function() {
+			d3.select(this).attr("stroke-width", 3);
+			d3.select("#ipBtn").style("border", "4px solid black");
+		})
+		.on("mouseout", function() {
+			d3.select(this).attr("stroke-width", 1);
+			d3.select("#ipBtn").style("border", ""/*"4px solid #64778f"*/);
+		})
+		.on("click", function() {
+			changeData("InsectProteinInnovation", document.getElementById("ipBtn"), this);
+		});
 		
+	d3.select("#svgCanvas").append("circle")
+		.attr("id", "frIcon")
+		.classed("innovationIcon", true)
+		.attr("r", 36)
+		.attr("cx", cx + 36)
+		.attr("cy", cy + 22)
+		.attr("fill", "#64778f")
+		.attr("stroke", "black")
+		.attr("stroke-width", 1)
+		.on("mouseover", function() {
+			d3.select(this).attr("stroke-width", 3);
+			d3.select("#frBtn").style("border", "4px solid black");
+		})
+		.on("mouseout", function() {
+			d3.select(this).attr("stroke-width", 1);
+			d3.select("#frBtn").style("border", ""/*"4px solid #64778f"*/);
+		})
+		.on("click", function() {
+			changeData("FoodRedistributionInnovation", document.getElementById("frBtn"), this);
+		});
 		
+	d3.select("#svgCanvas").append("circle")
+		.attr("id", "adIcon")
+		.classed("innovationIcon", true)
+		.attr("r", 36)
+		.attr("cx", cx)
+		.attr("cy", cy - 40)
+		.attr("fill", "#64778f")
+		.attr("stroke", "black")
+		.attr("stroke-width", 1)
+		.on("mouseover", function() {
+			d3.select(this).attr("stroke-width", 3);
+			d3.select("#adBtn").style("border", "4px solid black");
+		})
+		.on("mouseout", function() {
+			d3.select(this).attr("stroke-width", 1);
+			d3.select("#adBtn").style("border", ""/*"4px solid #64778f"*/);
+		})
+		.on("click", function() {
+			changeData("ADInnovation", document.getElementById("adBtn"), this);
+		});
+		
+	d3.select("#svgCanvas").append("image")
+		.attr('xlink:href', 'img/iconmonstr-bug-4w.svg')
+		.attr('width', 40)
+		.attr('height', 40)
+		.attr("x", cx - 57)
+		.attr("y", cy + 2)
+		.classed("nopointer", true);
+		
+	d3.select("#svgCanvas").append("image")
+		.attr('xlink:href', 'img/iconmonstr-eat-4w.svg')
+		.attr('width', 40)
+		.attr('height', 40)
+		.attr("x", cx + 16)
+		.attr("y", cy + 2)
+		.classed("nopointer", true);
+		
+	d3.select("#svgCanvas").append("image")
+		.attr('xlink:href', 'img/iconmonstr-light-bulb-6w.svg')
+		.attr('width', 40)
+		.attr('height', 40)
+		.attr("x", cx - 20)
+		.attr("y", cy - 61)
+		.classed("nopointer", true);
+		
+	d3.select("#ipBtn")
+		.on("mouseover", function() {
+			d3.select("#ipIcon").attr("stroke-width", 3);
+		})
+		.on("mouseout", function() {
+			d3.select("#ipIcon").attr("stroke-width", 1);
+		});
+		
+	d3.select("#frBtn")
+		.on("mouseover", function() {
+			d3.select("#frIcon").attr("stroke-width", 3);
+		})
+		.on("mouseout", function() {
+			d3.select("#frIcon").attr("stroke-width", 1);
+		});
+		
+	d3.select("#adBtn")
+		.on("mouseover", function() {
+			d3.select("#adIcon").attr("stroke-width", 3);
+		})
+		.on("mouseout", function() {
+			d3.select("#adIcon").attr("stroke-width", 1);
+		});
 		
 }
 
@@ -1006,12 +1104,7 @@ function openIndicator(element, d, i) {
 			// OPEN INDICATOR DETAILS
 			// UPDATE DETAILS
 			d3.select("#indicatorDetails").style("background-color", function() {
-				switch(d.type) {
-					case "Ec": return C.EC_COLOUR; break;
-					case "Soc": return C.SOC_COLOUR; break;
-					case "Env": return C.ENV_COLOUR; break;
-					default: return C.MIX_COLOUR; break;
-				}
+				return getIndicatorColour(d.type)
 			});
 			
 			d3.select("#driverBarrier").text(function() {
