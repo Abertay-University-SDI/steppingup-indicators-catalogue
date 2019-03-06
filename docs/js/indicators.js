@@ -1193,7 +1193,7 @@ function openIndicator(element, d, i) {
 			d3.select("#bns").on("click", function() {
 				d3.select("#futureScenario").text(function() { return d.bigSmart; });
 				d3.select("#futureScenario").classed("selected", true);
-				d3.select(element).classed("selected", true);
+				d3.select(this).classed("selected", true);
 				d3.select("#cnc").classed("selected", false);
 				d3.select("#snc").classed("selected", false);
 			});
@@ -1201,7 +1201,7 @@ function openIndicator(element, d, i) {
 			d3.select("#cnc").on("click", function() {
 				d3.select("#futureScenario").text(function() { return d.createCope; });
 				d3.select("#futureScenario").classed("selected", true);
-				d3.select(element).classed("selected", true);
+				d3.select(this).classed("selected", true);
 				d3.select("#bns").classed("selected", false);
 				d3.select("#snc").classed("selected", false);
 			});
@@ -1209,7 +1209,7 @@ function openIndicator(element, d, i) {
 			d3.select("#snc").on("click", function() {
 				d3.select("#futureScenario").text(function() { return d.shareConnect; });
 				d3.select("#futureScenario").classed("selected", true);
-				d3.select(element).classed("selected", true);
+				d3.select(this).classed("selected", true);
 				d3.select("#cnc").classed("selected", false);
 				d3.select("#bns").classed("selected", false);
 			});
