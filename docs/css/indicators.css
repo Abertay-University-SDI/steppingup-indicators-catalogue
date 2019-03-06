@@ -12,7 +12,10 @@ text, textPath, .nopointer {
 
 body {
 	font-family: 'Work Sans', sans-serif;
-	background-color: rgb(206, 235, 241);
+	background: rgb(206, 235, 241);
+	background: -webkit-linear-gradient(to left, #fff, rgb(206, 235, 241));
+	background: linear-gradient(to left, #fff, rgb(206, 235, 241));
+
 	/*background-image: url('../img/background.png');*/
 }
 

@@ -904,7 +904,7 @@ function drawBackground() {
 				.style("font-size", "0.9em")
 				.style("pointer-events", "none")
 				.style("fill", "rgba(255, 255, 255, 0)")
-				.transition("introCentreText").delay(600).duration(400)
+				.transition("introCentreText").delay(900).duration(600)
 				.style("fill", "white");
 		})
 		.transition("introCentre").duration(600).delay(600)
