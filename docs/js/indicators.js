@@ -21,6 +21,9 @@ var C = {
 var cx = window.innerWidth/2;
 var cy = window.innerHeight/2;
 
+var ready = false;
+
+
 window.onresize = function() {
 	if ( (raw.length > 0) && (ready) ) {
 		resize();
@@ -45,7 +48,6 @@ function getIndicatorColour(type) {
 	}
 }
 
-var ready = false;
 
 function changeData(innovation, button, icon) {
 	if (ready) {
