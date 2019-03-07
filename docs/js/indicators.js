@@ -319,9 +319,12 @@ function getDimensions() {
 		.attr("width", window.innerWidth)
 		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 640]));
 	
-	cx = document.getElementById("svgCanvas").clientWidth/2;
-	cy = document.getElementById("svgCanvas").clientHeight/2;
-	
+	// does not work in Firefox
+	//cx = document.getElementById("svgCanvas").clientWidth/2;
+	//cy = document.getElementById("svgCanvas").clientHeight/2;
+	cx = window.innerWidth/2;
+	cy = window.innerHeight/2;
+
 	var eyeSize = 0;
 	if (window.innerWidth > window.innerHeight) {
 		eyeSize = window.innerHeight/7.5;
