@@ -319,14 +319,11 @@ function loadData() {
 function getDimensions() {
 	d3.select("#svgCanvas")
 		.attr("width", window.innerWidth)
-		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 640]));
+		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 660]));
 	
-	// does not work in Firefox
-	//cx = document.getElementById("svgCanvas").clientWidth/2;
-	//cy = document.getElementById("svgCanvas").clientHeight/2;
-	cx = window.innerWidth/2;
-	cy = window.innerHeight/2;
-
+	cx = d3.select("#svgCanvas").attr("width")/2;
+	cy = d3.select("#svgCanvas").attr("height")/2;
+		
 	var eyeSize = 0;
 	if (window.innerWidth > window.innerHeight) {
 		eyeSize = window.innerHeight/7.5;
@@ -334,8 +331,8 @@ function getDimensions() {
 		eyeSize = window.innerWidth/5.0;
 	}
 	
-	C.IN_RADIUS =  d3.max([100, eyeSize + 80]);
-	C.OUT_RADIUS = d3.max([180, eyeSize + 160]);
+	C.IN_RADIUS =  d3.max([150, eyeSize + 80]);
+	C.OUT_RADIUS = d3.max([240, eyeSize + 160]);
 	/*C.CENTR_RADIUS = d3.max([80, eyeSize]);
 	C.IN_RADIUS_PUSH = d3.max([-40, eyeSize -170]);
 	C.OUT_RADIUS_PUSH = d3.max([80, eyeSize]);*/
