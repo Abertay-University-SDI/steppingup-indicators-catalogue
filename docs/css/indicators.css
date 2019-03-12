@@ -15,8 +15,8 @@ body {
 	background: rgb(206, 235, 241);
 	background: -webkit-linear-gradient(to left, #fff, rgb(206, 235, 241));
 	background: linear-gradient(to left, #fff, rgb(206, 235, 241));
-
 	/*background-image: url('../img/background.png');*/
+	overflow
 }
 
 #indicatorDetails, header, footer {
@@ -28,15 +28,23 @@ header {
 	background: none;
 }
 
+main {
+	overflow: hidden;
+}
+
 h1 {
+	position: absolute;
 	display: block;
 	margin: 0 auto;
 	text-align: center;
 	vertical-align: middle;
 	background: none;
+	left: 0;
+	right: 0;
 }
 
 #svgCanvas {
+	/*position: fixed;*/
 	margin: 0;
 	background-color: none;
 	overflow-y: auto;
@@ -60,26 +68,31 @@ footer {
 }
 
 #legend {
+	font-size: 1.1em;
 	position: absolute;
 	top: 60px;
 	right: 20px;
-	width: 15%;
-	min-width: 250px;
+	width: 18em;
 }
 
 #legend button {
+	font-size: 1.1em;
 	font-family: 'Work Sans', sans-serif;
 	text-align: left;
+	
+	width: 15em;
+	margin: 0.5em;
+	padding: 10px;
+	
 	font-weight: bold;
 	vertical-align: middle;
-	min-width: 240px;
-	margin: 0.5em;
 	color: white;
 	background-color: #64778f;
 	border: 4px solid #64778f;
 	border-radius: 20px;
-	padding: 10px;
-	transition: 200ms;
+	
+	transition-duration: 200ms;
+	transition-property: color, background-color, border;
 }
 
 #legend h2, #legend h3 {
@@ -93,7 +106,8 @@ footer {
 #legend button.selected {
 	background-color: red;
 	border: 4px solid red;
-	transition: 200ms;
+	transition-duration: 200ms;
+	transition-property: color, background-color, border;
 }
 
 #legend button.selected:hover {
@@ -109,6 +123,7 @@ footer {
 }
 
 #legend ul {
+	font-size: 1.1em;
 	list-style: none;
 }
 
@@ -335,19 +350,17 @@ footer {
 	border-left: 2px solid black;
 }
 
-@media (orientation: portrait) {
+@media only screen and (orientation: portrait) {
 	#indicatorDetails, header, footer {
 		font-size: 1.5em;
 	}
 	
 	#legend {
 		font-size: 1.2em;
-		min-width: 350px; 
 	}
 	
 	#legend button {
-		min-width: 320px;
-		font-size: 1.15em;
+		font-size: 1.2em;
 	}
 	
 	#legend ul {

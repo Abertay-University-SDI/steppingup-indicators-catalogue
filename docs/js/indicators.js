@@ -30,6 +30,12 @@ window.onresize = function() {
 	}
 }
 
+window.onorientationchange = function() {
+	if ( (raw.length > 0) && (ready) ) {
+		resize();
+	}
+}
+
 window.onload = function() {
 	getDimensions();	
 	loadData();
@@ -320,6 +326,8 @@ function getDimensions() {
 	d3.select("#svgCanvas")
 		.attr("width", window.innerWidth)
 		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 660]));
+	
+	d3.select("body").style("width", window.innerWidth);
 	
 	cx = d3.select("#svgCanvas").attr("width")/2;
 	cy = d3.select("#svgCanvas").attr("height")/2;
