@@ -19,7 +19,7 @@ var C = {
 }
 
 var cx = window.innerWidth/2;
-var cy = window.innerHeight/2;
+var cy = (window.innerHeight/2) + 20;
 
 var ready = false;
 
@@ -54,6 +54,29 @@ function getIndicatorColour(type) {
 	}
 }
 
+function getDimensions() {
+	d3.select("#svgCanvas")
+		.attr("width", window.innerWidth)
+		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 660]));
+	
+	d3.select("body").style("width", window.innerWidth);
+	
+	cx = d3.select("#svgCanvas").attr("width")/2;
+	cy = (d3.select("#svgCanvas").attr("height")/2) + 20;
+		
+	var eyeSize = 0;
+	if (window.innerWidth > window.innerHeight) {
+		eyeSize = window.innerHeight/7.5;
+	} else {
+		eyeSize = window.innerWidth/5.0;
+	}
+	
+	C.IN_RADIUS =  d3.max([150, eyeSize + 80]);
+	C.OUT_RADIUS = d3.max([240, eyeSize + 160]);
+	/*C.CENTR_RADIUS = d3.max([80, eyeSize]);
+	C.IN_RADIUS_PUSH = d3.max([-40, eyeSize -170]);
+	C.OUT_RADIUS_PUSH = d3.max([80, eyeSize]);*/
+}
 
 function changeData(innovation, button, icon) {
 	if (ready) {
@@ -320,30 +343,6 @@ function loadData() {
 		getDimensions();
 		drawBackground();
 	});
-}
-
-function getDimensions() {
-	d3.select("#svgCanvas")
-		.attr("width", window.innerWidth)
-		.attr("height", d3.max([window.innerHeight - document.getElementById("header").clientHeight - 8, 660]));
-	
-	d3.select("body").style("width", window.innerWidth);
-	
-	cx = d3.select("#svgCanvas").attr("width")/2;
-	cy = d3.select("#svgCanvas").attr("height")/2;
-		
-	var eyeSize = 0;
-	if (window.innerWidth > window.innerHeight) {
-		eyeSize = window.innerHeight/7.5;
-	} else {
-		eyeSize = window.innerWidth/5.0;
-	}
-	
-	C.IN_RADIUS =  d3.max([150, eyeSize + 80]);
-	C.OUT_RADIUS = d3.max([240, eyeSize + 160]);
-	/*C.CENTR_RADIUS = d3.max([80, eyeSize]);
-	C.IN_RADIUS_PUSH = d3.max([-40, eyeSize -170]);
-	C.OUT_RADIUS_PUSH = d3.max([80, eyeSize]);*/
 }
 
 function resize() {
@@ -909,7 +908,7 @@ function drawBackground() {
 				.attr("href", "#centreLabelPath" + String(i))
 				.attr("xlink:href", "#centreLabelPath" + String(i))
 				.attr("id", "centreLab" + String(i))
-				.attr("startOffset", 6 + (9 - d.length)*6 )
+				.attr("startOffset", 6 + (10 - d.length)*5 )
 				.text(d)
 				.style("font-size", "0.9em")
 				.style("pointer-events", "none")
