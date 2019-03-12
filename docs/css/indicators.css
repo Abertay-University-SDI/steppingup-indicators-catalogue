@@ -44,7 +44,6 @@ h1 {
 }
 
 #svgCanvas {
-	/*position: fixed;*/
 	margin: 0;
 	background-color: none;
 	overflow-y: auto;
@@ -67,22 +66,32 @@ footer {
 	opacity: 1;
 }
 
+#innovations {
+	font-size: 1.1em;
+	position: absolute;
+	top: 40px;
+	left: 0;
+	width: 15em;
+	text-align: left;
+}
+
 #legend {
 	font-size: 1.1em;
 	position: absolute;
-	top: 60px;
-	right: 20px;
-	width: 18em;
+	top: 51px;
+	right: 4px;
+	width: 15em;
+	text-align: center;
 }
 
-#legend button {
+#innovations button {
 	font-size: 1.1em;
 	font-family: 'Work Sans', sans-serif;
 	text-align: left;
 	
-	width: 15em;
-	margin: 0.5em;
-	padding: 10px;
+	width: 11.5em;
+	margin: 0.4em;
+	padding: 4px;
 	
 	font-weight: bold;
 	vertical-align: middle;
@@ -95,29 +104,35 @@ footer {
 	transition-property: color, background-color, border;
 }
 
-#legend h2, #legend h3 {
+#innovations h2 {
+	margin: 0;
+	margin-left: 1em;
+} 
+
+#legend h3 {
 	margin: 0;
 }
 
-#legend button:hover {
+#innovations button:hover {
 	border: 4px solid black;
 }
 
-#legend button.selected {
+#innovations button.selected {
 	background-color: red;
 	border: 4px solid red;
 	transition-duration: 200ms;
 	transition-property: color, background-color, border;
 }
 
-#legend button.selected:hover {
+#innovations button.selected:hover {
 	background-color: red;
 	border: 4px solid black;
 }
 
-#legend button img {
+#innovations button img {
 	width: 2.5em;
 	height: 2.5em;
+	float: left;
 	margin-right: 0.5em;
 	vertical-align: middle;
 }
@@ -125,6 +140,9 @@ footer {
 #legend ul {
 	font-size: 1.1em;
 	list-style: none;
+	padding-left: 0;
+	margin-top: 0.5em;
+	text-align: left;
 }
 
 #ecPillar, #socPillar, #envPillar,
@@ -355,12 +373,18 @@ footer {
 		font-size: 1.5em;
 	}
 	
-	#legend {
+	#innovations {
+		font-size: 1.2em;
+		left: 12px;
+	}
+	
+	#innovations button {
 		font-size: 1.2em;
 	}
 	
-	#legend button {
+	#legend {
 		font-size: 1.2em;
+		right: 12px;
 	}
 	
 	#legend ul {

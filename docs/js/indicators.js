@@ -60,12 +60,12 @@ function changeData(innovation, button, icon) {
 
 	ready = false;
 	if (d3.select(button).classed("selected") || d3.select(icon).classed("selected")) {
-		d3.selectAll("#legend button").classed("selected", false);
+		d3.selectAll("#innovations button").classed("selected", false);
 		d3.selectAll(".innovationIcon").classed("selected", false).attr("fill", "#64778f");
 		filteredData = raw;
 	} else {
 	
-		d3.selectAll("#legend button").classed("selected", false);
+		d3.selectAll("#innovations button").classed("selected", false);
 		d3.select(button).classed("selected", true);
 
 		d3.selectAll(".innovationIcon").classed("selected", false).attr("fill", "#64778f");
