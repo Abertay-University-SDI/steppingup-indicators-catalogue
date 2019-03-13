@@ -273,13 +273,18 @@ footer {
 }
 
 #futureScenario {
-	width: 90%;
+	width: 82%;
+	text-align: justify;
 	margin: 0 auto;
 	background-color: #ccc;
-	padding: 2em 0;
+	padding: 2em 4%;
 	border-radius: 0 0 40px 40px;
 	min-width: 500px;
 	color: black;
+}
+
+#futureScenario h4 {
+	margin: 0;
 }
 
 #futureScenario.selected {

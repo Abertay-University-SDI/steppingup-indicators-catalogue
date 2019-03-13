@@ -1209,14 +1209,20 @@ function openIndicator(element, d, i) {
 			d3.select("#futureScenario").text("^ Select a Future Scenario Tab Above ^");
 			
 			d3.select("#bns").on("click", function() {
-				d3.select("#futureScenario").text(function() { 
-					switch (selectedInnovation) {
-						case "InsectProteinInnovation": return d.bigSmartIP; break;
-						case "FoodRedistributionInnovation": return d.bigSmartFR; break;
-						case "ADInnovation": return d.bigSmartAD; break;
-						default: return d.bigSmartAD + d.bigSmartIP + d.bigSmartFR; break;
-					}
-				});
+				switch (selectedInnovation) {
+					case "InsectProteinInnovation": d3.select("#futureScenario").text(d.bigSmartIP); break;
+					case "FoodRedistributionInnovation": d3.select("#futureScenario").text(d.bigSmartFR); break;
+					case "ADInnovation": d3.select("#futureScenario").text(d.bigSmartAD); break;
+					default: 
+						document.getElementById("futureScenario").innerHTML = "";
+						d3.select("#futureScenario").append("h4").text("Insect Protein");
+						d3.select("#futureScenario").append("p").text(d.bigSmartIP);
+						d3.select("#futureScenario").append("h4").text("Anaerobic Digestion");
+						d3.select("#futureScenario").append("p").text(d.bigSmartAD);
+						d3.select("#futureScenario").append("h4").text("Food Redistribution");
+						d3.select("#futureScenario").append("p").text(d.bigSmartFR);
+						break;
+				}
 				d3.select("#futureScenario").classed("selected", true);
 				d3.select(this).classed("selected", true);
 				d3.select("#cnc").classed("selected", false);
@@ -1224,14 +1230,20 @@ function openIndicator(element, d, i) {
 			});
 			
 			d3.select("#cnc").on("click", function() {
-				d3.select("#futureScenario").text(function() { 
-					switch (selectedInnovation) {
-						case "InsectProteinInnovation": return d.createCopeIP; break;
-						case "FoodRedistributionInnovation": return d.createCopeFR; break;
-						case "ADInnovation": return d.createCopeAD; break;
-						default: return d.createCopeAD + d.createCopeIP + d.createCopeFR; break;
-					}
-				});
+				switch (selectedInnovation) {
+					case "InsectProteinInnovation": d3.select("#futureScenario").text(d.createCopeIP); break;
+					case "FoodRedistributionInnovation": d3.select("#futureScenario").text(d.createCopeFR); break;
+					case "ADInnovation": d3.select("#futureScenario").text(d.createCopeAD); break;
+					default: 
+						document.getElementById("futureScenario").innerHTML = "";
+						d3.select("#futureScenario").append("h4").text("Insect Protein");
+						d3.select("#futureScenario").append("p").text(d.createCopeIP);
+						d3.select("#futureScenario").append("h4").text("Anaerobic Digestion");
+						d3.select("#futureScenario").append("p").text(d.createCopeAD);
+						d3.select("#futureScenario").append("h4").text("Food Redistribution");
+						d3.select("#futureScenario").append("p").text(d.createCopeFR);
+						break;
+				}
 				d3.select("#futureScenario").classed("selected", true);
 				d3.select(this).classed("selected", true);
 				d3.select("#bns").classed("selected", false);
@@ -1239,14 +1251,20 @@ function openIndicator(element, d, i) {
 			});
 			
 			d3.select("#snc").on("click", function() {
-				d3.select("#futureScenario").text(function() { 
-					switch (selectedInnovation) {
-						case "InsectProteinInnovation": return d.shareConnectIP; break;
-						case "FoodRedistributionInnovation": return d.shareConnectFR; break;
-						case "ADInnovation": return d.shareConnectAD; break;
-						default: return d.shareConnectAD + d.shareConnectIP + d.shareConnectFR; break;
-					}
-				});
+				switch (selectedInnovation) {
+					case "InsectProteinInnovation": d3.select("#futureScenario").text(d.shareConnectIP); break;
+					case "FoodRedistributionInnovation": d3.select("#futureScenario").text(d.shareConnectFR); break;
+					case "ADInnovation": d3.select("#futureScenario").text(d.shareConnectAD); break;
+					default: 
+						document.getElementById("futureScenario").innerHTML = "";
+						d3.select("#futureScenario").append("h4").text("Insect Protein");
+						d3.select("#futureScenario").append("p").text(d.shareConnectIP);
+						d3.select("#futureScenario").append("h4").text("Anaerobic Digestion");
+						d3.select("#futureScenario").append("p").text(d.shareConnectAD);
+						d3.select("#futureScenario").append("h4").text("Food Redistribution");
+						d3.select("#futureScenario").append("p").text(d.shareConnectFR);
+						break;
+				}
 				d3.select("#futureScenario").classed("selected", true);
 				d3.select(this).classed("selected", true);
 				d3.select("#cnc").classed("selected", false);
