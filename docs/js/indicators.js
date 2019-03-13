@@ -23,6 +23,7 @@ var cy = (window.innerHeight/2) + 20;
 
 var ready = false;
 
+var selectedInnovation = "";
 
 window.onresize = function() {
 	if ( (raw.length > 0) && (ready) ) {
@@ -79,15 +80,17 @@ function getDimensions() {
 }
 
 function changeData(innovation, button, icon) {
+	
 	if (ready) {
-
+		
 	ready = false;
 	if (d3.select(button).classed("selected") || d3.select(icon).classed("selected")) {
+		selectedInnovation = "";
 		d3.selectAll("#innovations button").classed("selected", false);
 		d3.selectAll(".innovationIcon").classed("selected", false).attr("fill", "#64778f");
 		filteredData = raw;
 	} else {
-	
+		selectedInnovation = innovation;
 		d3.selectAll("#innovations button").classed("selected", false);
 		d3.select(button).classed("selected", true);
 
@@ -323,9 +326,15 @@ function loadData() {
 					comment: d["Comment"],
 					driverBarrier: d["DriverBarrier"],
 					upDown: d["IncreaseDecrease"],
-					bigSmart: d["Big n Smart"],
-					createCope: d["Create n Cope"],
-					shareConnect: d["Share n Connect"],
+					bigSmartAD: d["Big n Smart AD"],
+					createCopeAD: d["Create n Cope AD"],
+					shareConnectAD: d["Share n Connect AD"],
+					bigSmartFR: d["Big n Smart Food redistribution"],
+					createCopeFR: d["Create n Cope Food redistribution"],
+					shareConnectFR: d["Share n Connect Food redistribution"],
+					bigSmartIP: d["Big n Smart Insect protein"],
+					createCopeIP: d["Create n Cope Insect protein"],
+					shareConnectIP: d["Share n Connect Insect protein"],
 					sdgGoals: d["SDGGoals"],
 					InsectProteinInnovation: +d["InsectProteinInnovation"],
 					ADInnovation: +d["ADInnovation"],
@@ -1175,10 +1184,10 @@ function openIndicator(element, d, i) {
 			d3.select("#upDown").text(function() {
 				if (d.upDown === "Decrease") {
 					d3.select(element).style("color", "rgb(120, 0 , 0)");
-					return "Ideally Decrease"
+					return "Ideally Decrease";
 				} else if (d.upDown === "Increase") {
 					d3.select(element).style("color", "rgb(0, 120 , 0)");
-					return "Ideally Increase"
+					return "Ideally Increase";
 				} else {
 					return d.upDown;
 				}
@@ -1200,7 +1209,14 @@ function openIndicator(element, d, i) {
 			d3.select("#futureScenario").text("^ Select a Future Scenario Tab Above ^");
 			
 			d3.select("#bns").on("click", function() {
-				d3.select("#futureScenario").text(function() { return d.bigSmart; });
+				d3.select("#futureScenario").text(function() { 
+					switch (selectedInnovation) {
+						case "InsectProteinInnovation": return d.bigSmartIP; break;
+						case "FoodRedistributionInnovation": return d.bigSmartFR; break;
+						case "ADInnovation": return d.bigSmartAD; break;
+						default: return d.bigSmartAD + d.bigSmartIP + d.bigSmartFR; break;
+					}
+				});
 				d3.select("#futureScenario").classed("selected", true);
 				d3.select(this).classed("selected", true);
 				d3.select("#cnc").classed("selected", false);
@@ -1208,7 +1224,14 @@ function openIndicator(element, d, i) {
 			});
 			
 			d3.select("#cnc").on("click", function() {
-				d3.select("#futureScenario").text(function() { return d.createCope; });
+				d3.select("#futureScenario").text(function() { 
+					switch (selectedInnovation) {
+						case "InsectProteinInnovation": return d.createCopeIP; break;
+						case "FoodRedistributionInnovation": return d.createCopeFR; break;
+						case "ADInnovation": return d.createCopeAD; break;
+						default: return d.createCopeAD + d.createCopeIP + d.createCopeFR; break;
+					}
+				});
 				d3.select("#futureScenario").classed("selected", true);
 				d3.select(this).classed("selected", true);
 				d3.select("#bns").classed("selected", false);
@@ -1216,7 +1239,14 @@ function openIndicator(element, d, i) {
 			});
 			
 			d3.select("#snc").on("click", function() {
-				d3.select("#futureScenario").text(function() { return d.shareConnect; });
+				d3.select("#futureScenario").text(function() { 
+					switch (selectedInnovation) {
+						case "InsectProteinInnovation": return d.shareConnectIP; break;
+						case "FoodRedistributionInnovation": return d.shareConnectFR; break;
+						case "ADInnovation": return d.shareConnectAD; break;
+						default: return d.shareConnectAD + d.shareConnectIP + d.shareConnectFR; break;
+					}
+				});
 				d3.select("#futureScenario").classed("selected", true);
 				d3.select(this).classed("selected", true);
 				d3.select("#cnc").classed("selected", false);
@@ -1224,10 +1254,10 @@ function openIndicator(element, d, i) {
 			});
 			
 			// hide future scenarios if all empty
-			document.getElementById("futureSection").hidden = false;
+			/*document.getElementById("futureSection").hidden = false;
 			if ( (d.bigSmart.length < 1) && (d.createCope.length < 1) && (d.shareConnect.length < 1) ) {
 				document.getElementById("futureSection").hidden = true;
-			}
+			}*/
 
 			// UN SDG 
 			d3.selectAll("#unsdg *").remove();
