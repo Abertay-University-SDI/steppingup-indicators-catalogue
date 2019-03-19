@@ -323,9 +323,9 @@ function loadData() {
 		return 	{
 					name: d["Indicator"],
 					type: d["Type"],
-					comment: d["Comment"],
-					driverBarrier: d["DriverBarrier"],
-					upDown: d["IncreaseDecrease"],
+					definition: d["Definition of Indicator"],
+					driverBarrier: d["Driver/Barrier"],
+					upDown: d["Increase/Decrease"],
 					bigSmartAD: d["Big n Smart AD"],
 					createCopeAD: d["Create n Cope AD"],
 					shareConnectAD: d["Share n Connect AD"],
@@ -1170,7 +1170,7 @@ function openIndicator(element, d, i) {
 			});
 			
 			d3.select("#driverBarrier").text(function() {
-				if (d.driverBarrier === "Driver") {
+				/*if (d.driverBarrier === "Driver") {
 					d3.select(element).style("color", "rgb(0, 120 , 0)");
 					return "Innovation Driver"
 				} else if (d.driverBarrier === "Barrier") {
@@ -1178,11 +1178,12 @@ function openIndicator(element, d, i) {
 					return "Innovation Barrier"
 				} else {
 					return d.driverBarrier;
-				}
+				}*/
+				return d.driverBarrier;
 			});
 
 			d3.select("#upDown").text(function() {
-				if (d.upDown === "Decrease") {
+				/*if (d.upDown === "Decrease") {
 					d3.select(element).style("color", "rgb(120, 0 , 0)");
 					return "Ideally Decrease";
 				} else if (d.upDown === "Increase") {
@@ -1190,12 +1191,12 @@ function openIndicator(element, d, i) {
 					return "Ideally Increase";
 				} else {
 					return d.upDown;
-				}
+				}*/
 				return d.upDown;
 			});
 			
 			d3.select("#iDefinition").text(function() {
-				return d.comment;
+				return d.definition;
 			});
 			
 			d3.select("#iTitle").text(function() {
