@@ -228,7 +228,7 @@ function changeData(innovation, button, icon) {
 				
 				// DESELECT
 				if (!d3.select(this).classed("selected")) {
-					d3.select(this).transition("deselectOut2").attr("d", function() {
+					d3.select(this).transition("select").attr("d", function() {
 						return [
 								"M",
 								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
@@ -656,7 +656,7 @@ function drawBackground() {
 				
 				// DESELECT
 				if (!d3.select(this).classed("selected")) {
-					d3.select(this).transition("deselectOut").attr("d", function() {
+					d3.select(this).transition("select").attr("d", function() {
 						return [
 								"M",
 								cx + (Math.sin( (((i-1)/filteredData.length) + (((1)/filteredData.length)/10) )*2*Math.PI ) * (C.IN_RADIUS)),
