@@ -44,6 +44,42 @@ window.onload = function() {
 
 var filteredData = [];
 
+function showHelp() {
+	document.getElementById("helpSection").hidden = false;
+	d3.select("#helpSection")
+		.style("opacity", 0)
+		.transition(400)
+		.style("opacity", 1);
+}
+
+function closeHelp() {
+	d3.select("#helpSection")
+		.style("opacity", 1)
+		.transition(400)
+		.style("opacity", 0)
+		.on("end", function() {
+			document.getElementById("helpSection").hidden = true;
+		});
+}
+
+function toggleWelcome() {
+	if (d3.select("#toggleWelcome").text() === "<?<") {
+		d3.select("#welcomeMessage")
+			.style("left", "0.5em")
+			.transition(500)
+			.style("left", "-12em");
+		
+		d3.select("#toggleWelcome").text(">?>");
+	} else {
+		d3.select("#welcomeMessage")
+			.style("left", "-12em")
+			.transition(500)
+			.style("left", "0.5em");
+		
+		d3.select("#toggleWelcome").text("<?<");
+	}
+}
+
 function getIndicatorColour(type) {
 	switch (type) {
 		case "Ec": return C.EC_COLOUR; break;

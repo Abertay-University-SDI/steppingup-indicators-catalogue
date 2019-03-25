@@ -182,6 +182,80 @@ footer {
 /**/
 /**/
 
+#welcomeMessage {
+	position: absolute;
+	top: 20.5em;
+	left: 0.5em;
+	width: 12em;
+	background-color: hsla(0, 0%, 100%, 0.5);
+	padding: 0.8em;
+	text-align: left;
+}
+
+#welcomeMessage p {
+	margin: 0;
+	padding-right: 0.8em;
+}
+
+#welcomeMessage #toggleWelcome {
+	position: absolute;
+	top: -16px;
+	right: -16px;
+	margin: 0;
+	font-size: 1.0em;
+	padding: 0.2em;
+	/*padding-top: 0em;*/
+	width: 2.5em;
+	height: 2.5em;
+	border-radius: 4em;
+	font-family: 'Work Sans', sans-serif;
+}
+
+#welcomeMessage button:hover {
+	background-color: #eee;
+}
+
+#welcomeMessage h4 {
+	margin: 0;
+}
+
+#welcomeMessage #showHelp {
+	margin-top: 0.5em;
+	height: 2.5em;
+	font-family: 'Work Sans', sans-serif;
+}
+
+#helpSection {
+	position: fixed;
+	top: 4em;
+	right: 4em;
+	left: 4em;
+	bottom: 4em;
+	background-color: hsla(0, 0%, 100%, 0.95);
+	text-align: center;
+	font-size: 1.5em;
+	padding: 2em;
+	overflow-y: auto;
+}
+
+#helpSection button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 2em;
+	height: 2em;
+	border-radius: 4em;
+	padding-bottom: 0.1em;
+}
+
+#helpSection button:hover {
+	background-color: #eee;
+}
+
+/**/
+/**/
+/**/
+
 #iProperties {
 	margin: 2.5em;
 }
@@ -279,7 +353,7 @@ footer {
 	background-color: #ccc;
 	padding: 2em 4%;
 	border-radius: 0 0 40px 40px;
-	min-width: 500px;
+	min-width: 460px;
 	color: black;
 }
 
@@ -399,5 +473,9 @@ footer {
 	#indicatorDetails {
 		left: 5%;
 		right: 5%;
+	}
+	
+	#welcomeMessage {
+		top: 23em;
 	}
 }

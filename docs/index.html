@@ -26,6 +26,12 @@
 				<button id="adBtn" onclick="changeData('ADInnovation', this, document.getElementById('adIcon'))"><img src="img/iconmonstr-light-bulb-6w.svg">Anaerobic Digestion</button>
 				<button id="frBtn" onclick="changeData('FoodRedistributionInnovation', this, document.getElementById('frIcon'))"><img src="img/iconmonstr-eat-4w.svg">Food Redistribution</button>
 			</div>
+			<section id="welcomeMessage">
+				<button id="toggleWelcome" onclick="toggleWelcome()">&lt;?&lt;</button>
+				<h4>Hello!</h4> 
+				<p>This is a catalogue of sustainability indicators as they relate to three key innovations in the Water-Energy-Food Nexus.</p>
+				<button id="showHelp" onclick="showHelp()">About / How to use?</button>
+			</section>
 			<div id="legend">
 				<h3>Pillars of Sustainability</h3>
 				<ul id="pillars">
@@ -69,6 +75,15 @@
 						</tbody>
 					</table>
 				</div>
+			</section>
+			<section id="helpSection" hidden="true">
+				<button id="closeHelp" onclick="closeHelp()">x</button>
+				<h3>About</h3>
+				<p>This is a catalogue of sustainability indicators as they relate to three key innovations in the Water-Energy-Food Nexus.</p>
+				<h3>How to Use</h3>
+				<p>Press an innovation on the left or in the centre to reveal the applicable indicators.</p>
+				<p>Explore the indicators by category by pressing on the six perspective categories around the centre.</p>
+				<p>Press on a colour-coded indicator piece to find out more.</p>
 			</section>
 		</main>
 		<footer>
