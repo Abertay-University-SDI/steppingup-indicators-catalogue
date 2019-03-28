@@ -1,0 +1,70 @@
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: url('../fnt/Work_Sans/WorkSans-Regular.ttf');
+}
+
+body {
+	font-family: 'Work Sans', sans-serif;
+	background: rgb(206, 235, 241);
+	background: -webkit-linear-gradient(to left, #fff, rgb(206, 235, 241));
+	background: linear-gradient(to left, #fff, rgb(206, 235, 241));
+	/*background-image: url('../img/background.png');*/
+}
+
+header {
+	text-align: center;
+	background: none;
+}
+
+.header-logo {
+	height: 3em;
+	margin: 1em;
+}
+
+main {
+	overflow: hidden;
+}
+
+h1 {
+	display: block;
+	margin: 0.5em auto;
+	text-align: center;
+	vertical-align: middle;
+	background: none;
+}
+
+h2, h3 {
+	text-align: center;
+}
+
+section {
+	text-align: center;
+	margin: 2em auto;
+	width: 90%;
+}
+
+section section {
+	display: inline-block;
+	width: 25%;
+	margin: 0.5em;
+	vertical-align: top;
+	/*max-height: 20em;
+	overflow-y: hidden;*/
+	background: -webkit-linear-gradient(to top, #fff, rgb(206, 235, 241));
+	background: linear-gradient(to top, #fff, rgb(206, 235, 241));
+}
+
+section section p {
+	text-align: justify;
+	padding: 2em;
+}
+
+section section blockquote {
+	text-align: justify;
+}
+
+footer {
+	text-align: center;
+}

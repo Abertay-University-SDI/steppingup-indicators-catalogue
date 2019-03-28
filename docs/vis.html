@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="robots" content="noindex, nofollow">
+		<meta name="robots" content="nosnippet">
+		<meta name="googlebot" content="nosnippet">
+		<meta property="og:title" content="STEPPING UP - SUSTAINABILITY INDICATORS">
+		<meta property="og:type" content="website">
+		<meta property="og:description" content="An interactive catalogue of sustainability indicators.">
+		<title>STEPPING UP - SUSTAINABILITY INDICATORS</title>
+		<meta name="description" content="An interactive catalogue of sustainability indicators.">
+		<meta name="keywords" content="sustainability, indicators, catalogue">
+		<link href="css/normalize.css" rel="stylesheet">
+		<link href="css/catalogue.css" rel="stylesheet">
+	</head>
+	<body>
+		<header id="header">
+			<h1>Sustainability Indicators Catalogue</h1>
+		</header>
+		<main id="main">
+			<svg id="svgCanvas"></svg>
+			<div id="innovations">
+				<h2>Innovations</h2>
+				<button id="ipBtn" onclick="changeData('InsectProteinInnovation', this, document.getElementById('ipIcon'))"><img src="img/iconmonstr-bug-4w.svg">Insect <br>Protein</button>
+				<button id="adBtn" onclick="changeData('ADInnovation', this, document.getElementById('adIcon'))"><img src="img/iconmonstr-light-bulb-6w.svg">Anaerobic Digestion</button>
+				<button id="frBtn" onclick="changeData('FoodRedistributionInnovation', this, document.getElementById('frIcon'))"><img src="img/iconmonstr-eat-4w.svg">Food Redistribution</button>
+			</div>
+			<section id="welcomeMessage">
+				<button id="toggleWelcome" onclick="toggleWelcome()">&lt;?&lt;</button>
+				<h4>Hello!</h4> 
+				<p>This is a catalogue of sustainability indicators as they relate to three key innovations in the Water-Energy-Food Nexus.</p>
+				<button id="showHelp" onclick="showHelp()">About / How to use?</button>
+			</section>
+			<div id="legend">
+				<h3>Pillars of Sustainability</h3>
+				<ul id="pillars">
+					<li><span id="ecPillar"> </span> Economic</li>
+					<li><span id="socEcPillar"> </span> Socio-Economic</li>
+					<li><span id="socPillar"> </span> Social</li>
+					<li><span id="socEnvPillar"> </span> Socio-Environmental</li>
+					<li><span id="envPillar"> </span> Environmental</li>
+					<li><span id="allPillar"> </span> All Pillars</li>
+				</ul>
+			</div>
+			<section id="indicatorDetails" hidden>
+				<button id="backButton" onclick="goback()">x</button>
+				<h2 id="iTitle">Indicator Title</h2>
+				<p id="iDefinition"></p>
+				<p id="iProperties">
+					<span id="driverBarrier"></span>
+					<span id="upDown"></span>
+				</p>
+				<section id="futureSection">
+					<h3>Future Scenarios</h3>
+					<div id="futureScenarioButtonsDiv">
+						<button id="bns" class="futureScenarioButton">Big 'n' Smart</button><button id="cnc" class="futureScenarioButton">Create 'n' Cope</button><button id="snc" class="futureScenarioButton">Share 'n' Connect</button>
+					</div>
+					<div id="futureScenario">
+					</div>
+				</section>
+				<div id="sdgDiv">
+					<h3>Relation to UN Sustainable Development Goals</h3>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<a href="http://steppingupnexus.org.uk/" target="_blank"><img id="steppingupLogoSdg" src="img/SteppingUp_logo_rgb.png" alt="SteppingUp Logo"></a>
+								</td>
+								<td id="sdgIcons">
+									<a href="https://www.un.org/sustainabledevelopment/" target="_blank"><img id="sdgLogo" src="img/E_SDG_logo_No_UN_Emblem_square_rgb.png" alt="United Nations Sustainable Development Goals Logo"></a>
+									<span id="unsdg"></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+			<section id="helpSection" hidden="true">
+				<button id="closeHelp" onclick="closeHelp()">x</button>
+				<h3>About</h3>
+				<p>This is a catalogue of sustainability indicators as they relate to three key innovations in the Water-Energy-Food Nexus.</p>
+				<h3>How to Use</h3>
+				<p>Press an innovation on the left or in the centre to reveal the applicable indicators.</p>
+				<p>Explore the indicators by category by pressing on the six perspective categories around the centre.</p>
+				<p>Press on a colour-coded indicator piece to find out more.</p>
+			</section>
+		</main>
+		<footer>
+			<a href="http://steppingupnexus.org.uk/" target="_blank"><img id="steppingupLogo" class="footer-logo" src="img/SteppingUp_logo_rgb.png" alt="SteppingUp Logo"></a>
+			<a href="https://www.abertay.ac.uk/" target="_blank"><img id="abertayLogo" class="footer-logo" src="img/abertay_logo_colour_transparent.png" alt="Abertay University Logo"></a>
+		</footer>
+		<!-- Internet Explorer 'Promise' polyfill: https://github.com/taylorhakes/promise-polyfill -->
+		<script src="lib/promise-polyfill/polyfill.min.js"></script>
+		<!-- Internet Explorer 'fetch' polyfill: https://github.com/github/fetch -->
+		<script src="lib/fetch-3.0.0/fetch.umd.js"></script>
+		<!-- D3 Library: https://github.com/d3/d3/wiki -->
+		<script src="lib/d3/d3.min.js"></script>
+		<!-- Main Code -->
+		<script src="js/indicators.js"></script>
+	</body>
+</html>

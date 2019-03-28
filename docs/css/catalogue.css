@@ -16,7 +16,6 @@ body {
 	background: -webkit-linear-gradient(to left, #fff, rgb(206, 235, 241));
 	background: linear-gradient(to left, #fff, rgb(206, 235, 241));
 	/*background-image: url('../img/background.png');*/
-	overflow
 }
 
 #indicatorDetails, header, footer {
