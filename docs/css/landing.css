@@ -9,7 +9,7 @@ body {
 	font-family: 'Work Sans', sans-serif;
 	background: rgb(206, 235, 241);
 	background: -webkit-linear-gradient(to left, #fff, rgb(206, 235, 241));
-	background: linear-gradient(to left, #fff, rgb(206, 235, 241));
+	background: linear-gradient(to left, #fff, rgb(206, 235, 241), #fff);
 	/*background-image: url('../img/background.png');*/
 }
 
@@ -35,8 +35,18 @@ h1 {
 	background: none;
 }
 
-h2, h3 {
+h2 {
 	text-align: center;
+	background-color: white;
+	border-radius: 2em;
+	width: 80%;
+	margin: 1em auto;
+	padding: 0.5em;
+}
+
+h3 {
+	text-align: center;
+	margin: 1em;
 }
 
 section {
@@ -59,6 +69,8 @@ section section {
 section section p {
 	text-align: justify;
 	padding: 2em;
+	padding-top: 0.5em;
+	margin: 0;
 }
 
 footer {
@@ -68,6 +80,28 @@ footer {
 #about {
 	width: 40%;
 }
+
+#innovationsSection section img {
+	width: 3em;
+	height: 3em;
+	margin: 1em;
+}
+
+#adInnovation {
+	background: hsl(330, 100%, 50%);
+	color: white;
+}
+
+#ipInnovation {
+	background: hsl(0, 100%, 50%);
+	color: white;
+}
+
+#frInnovation {
+	background: hsl(20, 100%, 40%);
+	color: white;
+}
+
 
 #envPillar {
 	background: hsl(100, 100%, 42%);
@@ -82,4 +116,10 @@ footer {
 #socPillar {
 	background: hsl(40, 100%, 50%);
 	color: white;
+}
+
+#unsdgSection img {
+	width: 10em;
+	background: white;
+	border-radius: 0.5em;
 }
