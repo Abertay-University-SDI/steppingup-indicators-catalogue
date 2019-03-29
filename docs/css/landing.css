@@ -62,8 +62,13 @@ section section {
 	vertical-align: top;
 	/*max-height: 20em;
 	overflow-y: hidden;*/
-	background: -webkit-linear-gradient(to top, #fff, rgb(206, 235, 241));
-	background: linear-gradient(to top, #fff, rgb(206, 235, 241));
+	background: hsla(0, 0%, 100%, 0.8);
+}
+
+section p {
+	text-align: justify;
+	width: 80%;
+	margin: 0 auto;
 }
 
 section section p {
@@ -79,6 +84,8 @@ footer {
 
 #about {
 	width: 40%;
+	background: hsla(0, 0%, 100%, 0.8);
+	border-radius: 4em 0 4em 0;
 }
 
 #innovationsSection section img {
@@ -118,8 +125,11 @@ footer {
 	color: white;
 }
 
+#unsdgSection {
+	width: 60%;
+}
+
 #unsdgSection img {
-	width: 10em;
+	height: 8em;
 	background: white;
-	border-radius: 0.5em;
 }
