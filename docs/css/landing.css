@@ -61,10 +61,25 @@ section section p {
 	padding: 2em;
 }
 
-section section blockquote {
-	text-align: justify;
-}
-
 footer {
 	text-align: center;
+}
+
+#about {
+	width: 40%;
+}
+
+#envPillar {
+	background: hsl(100, 100%, 42%);
+	color: white;
+}
+
+#ecPillar {
+	background: hsl(200, 100%, 50%);
+	color: white;
+}
+
+#socPillar {
+	background: hsl(40, 100%, 50%);
+	color: white;
 }
