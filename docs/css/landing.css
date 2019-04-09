@@ -55,58 +55,124 @@ section {
 	width: 90%;
 }
 
+@media only screen and (orientation: portrait) {
+	section {
+		width: 99%;
+	}	
+}
+
 section section {
-	display: inline-block;
-	width: 25%;
-	margin: 0.5em;
+	width: 75%;
+	margin: 0.5em auto;
+	padding: 1em;
 	vertical-align: top;
-	/*max-height: 20em;
-	overflow-y: hidden;*/
+	
 	background: hsla(0, 0%, 100%, 0.8);
 }
 
 section p {
 	text-align: justify;
-	width: 80%;
-	margin: 0 auto;
+	width: 75%;
+	margin: 0.5em auto;
 }
 
-section section p {
+#innovationsSection section p {
+	clear: both;
 	text-align: justify;
-	padding: 2em;
-	padding-top: 0.5em;
-	margin: 0;
+	width: 95%;
 }
 
 footer {
 	text-align: center;
+	font-size: 0.8em;
+	padding: 1em;
+	background-color: white;
+}
+
+#visImage {
+	position: absolute;
+	right: 20px;
+	top: 140px;
+	z-index: -1;
 }
 
 #about {
+	display: inline-block;
 	width: 40%;
 	background: hsla(0, 0%, 100%, 0.8);
 	border-radius: 4em 0 4em 0;
+}
+
+#pillarsSection img {
+	height: 20em;
+}
+
+#callForAction {
+	display: inline-block;
+	width: 30%;
+	background: hsla(0, 0%, 100%, 0.95);
+	border-radius: 4em;
+}
+
+#callForAction a {
+	display: inline-block;
+	color: white;
+	font-weight: bold;
+	background-color: red;
+	text-decoration: none;
+	padding: 1em;
+	margin: 0.5em;
+	border-radius: 1em;
+	box-shadow: 4px 4px hsla(0, 0%, 0%, 0.3);
+}
+
+#callForAction a:hover {
+	background-color: hsl(0, 100%, 40%);
+}
+
+#bns, #snc {
+	border-radius: 4em 0 4em 0;
+	background: hsla(0, 0%, 100%, 0.5);
+}
+
+#cnc {
+	border-radius: 0 4em 0 4em;
+	background: hsla(0, 0%, 100%, 0.7);
+}
+
+#futureScenariosSection section p {
+	width: 90%;
 }
 
 #innovationsSection section img {
 	width: 3em;
 	height: 3em;
 	margin: 1em;
+	float: left;
+}
+
+#innovationsSection h3 {
+	text-align: left;
+	margin: 1.5em;
+	padding-left: 3em;
 }
 
 #adInnovation {
-	background: hsl(330, 100%, 50%);
+	background: hsl(340, 100%, 60%);
 	color: white;
+	border-radius: 0 4em 0 4em;
 }
 
 #ipInnovation {
-	background: hsl(0, 100%, 50%);
+	background: hsl(260, 100%, 60%);
 	color: white;
+	border-radius: 4em 0 4em 0;
 }
 
 #frInnovation {
-	background: hsl(20, 100%, 40%);
+	background: hsl(10, 100%, 60%);
 	color: white;
+	border-radius: 0 4em 0 4em;
 }
 
 
@@ -125,11 +191,15 @@ footer {
 	color: white;
 }
 
-#unsdgSection {
+#unsdgIcons {
 	width: 60%;
+	margin: 0 auto;
+	margin-top: 1em;
+	background-color: white;
+	border-radius: 2em;
 }
 
-#unsdgSection img {
+#unsdgIcons img {
 	height: 8em;
 	background: white;
 }

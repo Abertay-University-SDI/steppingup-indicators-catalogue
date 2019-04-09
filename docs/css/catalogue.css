@@ -231,10 +231,14 @@ footer {
 	left: 4em;
 	bottom: 4em;
 	background-color: hsla(0, 0%, 100%, 0.95);
-	text-align: center;
-	font-size: 1.5em;
+	text-align: justify;
+	font-size: 1.1em;
 	padding: 2em;
 	overflow-y: auto;
+}
+
+#helpSection h3 { 
+	text-align: center;
 }
 
 #helpSection button {
